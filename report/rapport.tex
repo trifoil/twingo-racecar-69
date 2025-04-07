@@ -1,0 +1,142 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz} % For precise background positioning
+\usepackage{eso-pic} % For adding content to every page
+
+% Correction pour l'erreur de headheight
+\setlength{\headheight}{14.5pt}
+
+\setlist[itemize]{label=\textbullet}
+
+% Configuration de la page
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+% Style des titres
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% Style des listings
+\lstset{
+	basicstyle=\ttfamily\small,
+	breaklines=true,
+	frame=single,
+	backgroundcolor=\color{gray!10},
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	literate=
+	{é}{{\'e}}1
+	{è}{{\`e}}1
+	{ê}{{\^e}}1
+	{ë}{{\"e}}1
+	{É}{{\'E}}1
+	{Ê}{{\^E}}1
+	{à}{{\`a}}1
+	{â}{{\^a}}1
+	{ç}{{\c c}}1
+	{Ç}{{\c C}}1
+	{ù}{{\`u}}1
+	{û}{{\^u}}1
+}
+
+% Add FWB logo to every page
+\AddToShipoutPictureBG{%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south east, xshift=-2.5cm, yshift=1cm] at (current page.south east)
+		{\includegraphics[width=0.3\textwidth]{fwb.png}};
+	\end{tikzpicture}%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south west, xshift=2.5cm, yshift=0.75cm] at (current page.south west)
+		{\includegraphics[width=0.2\textwidth]{logo.png}};
+	\end{tikzpicture}%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south west, xshift=1cm, yshift=1cm] at (current page.south west)
+		{\includegraphics[width=0.02\textwidth]{side.png}};
+	\end{tikzpicture}%
+}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Projet Voiture - Groupe X}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Page de garde
+\title{}
+\author{}
+\date{}
+
+% Custom title page with background image
+\renewcommand{\maketitle}{%
+	\begin{titlepage}
+		% Background image
+		\begin{tikzpicture}[remember picture,overlay]
+			\node[anchor=north west, inner sep=0pt] at (current page.north west)
+			{\includegraphics[width=\paperwidth]{entete.png}};
+		\end{tikzpicture}
+		
+		% Content with proper vertical spacing
+		\null  % Needed to start a new paragraph
+		\vspace*{5cm} % Adjust this value to position your content lower
+		
+		\centering
+		{\large Gestion de projet \\}
+		\vspace{0.5cm}
+		{\LARGE\textbf{Projet Voiture 2IRT} \\}
+		
+		\vspace{6cm}
+		
+		\begin{flushright} % Left alignment for the following content
+			\textbf{Année Académique} \\
+			2024 - 2025 \\
+			\vspace{0.5cm}
+			\textbf{Groupe} \\
+			5 \\
+			\vspace{0.5cm}
+			\textbf{Membres} \\
+			Colle Joulian \\
+			Deneyer Tom \\
+			Kruczynski Mathis \\
+			Mauroit Antoine \\
+			Staquet Esteban \\
+			Vangeebergen Augustin \\
+
+		\end{flushright}
+	\end{titlepage}
+}
+
+\begin{document}
+	% Page de garde
+	\maketitle
+	\thispagestyle{empty}
+	\newpage
+	
+	% Table des matières
+	\tableofcontents
+	\thispagestyle{empty}
+	\newpage
+	
+	% Corps du document
+	\setcounter{page}{1}
+	
+	\section{Introduction}
+	\section{Présentation générale du projet}
+	\section{Présentation détaillée des composants}
+	\section{Présentation des méthodes scrum et de notre gestion de projet}
+	\section{Algorithmes de programmation (points prioncipaux) Commandes de configuration}
+	\section{Améliorations et conclusions}
+	\section{Bibliographie}
+	\section{Annexes}
+\end{document}

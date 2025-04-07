@@ -1,4 +1,5 @@
 *.out
-*.tex
 *.synctex.gz
 *.toc
+*.log
+*.aux
