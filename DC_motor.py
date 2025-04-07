@@ -1,3 +1,9 @@
+"""
+Classe DC Motor va comprendre tous les attributs utile à la classe et qui seront repris dans
+le motor manager
+"""
+
+
 import RPI.GPIO as GPIO
 
 """
@@ -14,14 +20,14 @@ Le setup High ou Low servira a définir le sens de rotation (accélération ou f
 
 class DC_Motor():
     def __init__(self, pin_enable: int, pin_input1: int, pin_input2: int):
-        self.__pin_enable = pin_enable
-        self.__pin_input1 = pin_input1
-        self.__pin_input2 = pin_input2
+        self._pin_enable = pin_enable
+        self._pin_input1 = pin_input1
+        self._pin_input2 = pin_input2
 
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.__pin_enable, GPIO.OUT)
-        GPIO.setup(self.__pin_input1, GPIO.OUT)
-        GPIO.setup(self.__pin_input2, GPIO.OUT)
+        GPIO.setup(self._pin_enable, GPIO.OUT)
+        GPIO.setup(self._pin_input1, GPIO.OUT)
+        GPIO.setup(self._pin_input2, GPIO.OUT)
 
     """
     Set up de getter nécessaire de tout les attributs du DC_Motor
@@ -29,15 +35,15 @@ class DC_Motor():
 
     @property
     def pin_enable(self) -> int:
-        return self.__pin_enable
+        return self._pin_enable
 
     @property
     def pin_input1(self) -> int:
-        return self.__pin_input1
+        return self._pin_input1
 
     @property
     def pin_input2(self) -> int:
-        return self.__pin_input2
+        return self._pin_input2
 
     """
     Fonction qui permet de gérer l'accélération ou freinage.
