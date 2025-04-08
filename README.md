@@ -4,9 +4,14 @@
 
 ## Setup de dev
 
-### Versions
+### Versions & Dependances
 - Python `v3.13.2` au minimum.
 - Pip `24.2` au minimum.
+
+#### Fedora Linux
+```bash
+sudo dnf install make automake gcc gcc-c++ kernel-devel
+```
 
 ### Dépendances
 Comment installer les différentes dépendances
