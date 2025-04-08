@@ -1,5 +1,5 @@
 import sys
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 """Simulation des modules pour que les tests fonctionnent sur windwows"""
 sys.modules['board'] = MagicMock()
@@ -10,7 +10,6 @@ sys.modules['adafruit_ina219.INA219'] = MagicMock()
 from INASensor import INA_Sensor #Faut mettre le bon nom de fichier
 
 import unittest
-from unittest.mock import MagicMock, patch
 
 class TestINASensor(unittest.TestCase):
     """ Classe de tests pour la classe INASensor
