@@ -57,4 +57,3 @@ class DummyTCS34725:
 
 # --- Import de SensorManager après avoir patché les modules matériels ---
 from classes.MotorManager import MotorManager
-
