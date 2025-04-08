@@ -8,7 +8,7 @@ Bus à instancier, partagé par tous les composants i²C...
 monbus = busio.I2C(board.SCL,board.SDA)
 """
 
-class Rgb_Sensor(Sensor):
+class RGB_Sensor(Sensor):
     def __init__(self, i2c:tuple):
         self._i2c_bus ,self._address = i2c
         self._sensor = adafruit_tcs34725.TCS34725(self._i2c_bus, self._address)
