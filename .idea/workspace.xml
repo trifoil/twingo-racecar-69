@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="29845dc6-5092-4658-a505-9dd02ea950fe" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Servo_Motor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +41,6 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Servo__Motor",
     "last_opened_file_path": "C:/Users/mathi/Documents/GitHub/twingo-racecar-69"
   }
 }]]></component>
