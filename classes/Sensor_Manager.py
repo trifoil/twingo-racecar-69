@@ -27,7 +27,7 @@ class Sensor_Manager:
         self._ina_sensor = sensors['ina_sensor']
         self._is_on_line = False
 
-    def detectLine(self) -> bool:
+    def detect_line(self) -> bool:
         """
         Détecte le passage sur la ligne.
         Renvoie True uniquement lors de la première détection lorsque la voiture entre sur la ligne.
@@ -42,7 +42,7 @@ class Sensor_Manager:
             print("Erreur lors de la détection de la ligne:", e)
         return False
     
-    def getDistance(self) -> tuple:
+    def get_distance(self) -> tuple:
         """
         Renvoie un tuple des distances (Front, Left, Right) en cm.
         Pour chaque capteur, 5 mesures sont effectuées et la moyenne des lectures valides est calculée.
@@ -53,9 +53,12 @@ class Sensor_Manager:
         def wrapper(sensor, index):
             readings = []
             for _ in range(5):
-                value = sensor.readValue()
-                if value is not None:
-                    readings.append(value)
+                try:
+                    value = sensor.readValue()
+                    if value is not None:
+                        readings.append(value)
+                except Exception as e:
+                    print(sensor.side, e)
                 time.sleep(0.01) 
             if readings:
                 avg = round(sum(readings) / len(readings),1)
@@ -75,48 +78,48 @@ class Sensor_Manager:
             thread.join()
         return tuple(results)
 
-    def getCurrent(self) -> float:
+    def get_current(self) -> float:
         """
         Renvoie la valeur du courant mesuré par le capteur INA.
         En cas d'erreur, renvoie None.
         """
         try:
-            sensorData = self._ina_sensor.readValue()
-            return sensorData.get('Current', None)
+            sensor_data = self._ina_sensor.readValue()
+            return sensor_data['Current']
         except Exception as e:
             print("Erreur lors de la lecture du courant: ", e)
             return None
     
-    def isRed(self,redMinimum:int,G_R_DeltaMinimum:int) -> bool:
+    def is_red(self,red_minimum:int,g_r_delta_minimum:int) -> bool:
         """
         Détecte la présence de rouge.
         Le rouge est considéré comme détecté si :
-          - la valeur de R est supérieure ou égale à redMinimum,
-          - et si la différence (R - G) est supérieure ou égale à G_R_DeltaMinimum.
+          - la valeur de R est supérieure ou égale à red_minimum,
+          - et si la différence (R - G) est supérieure ou égale à g_r_delta_minimum.
         """
         try:
             r, g, b = self._rgb_sensor.readValue()
-            if r < redMinimum:
+            if r < red_minimum:
                 return False
-            if (r - g) < G_R_DeltaMinimum:
+            if (r - g) < g_r_delta_minimum:
                 return False
             return True
         except Exception as e:
             print("Erreur lors de la détection du rouge: ", e)
             return False
 
-    def isGreen(self,greenMinimum:int,G_R_DeltaMinimum:int) -> bool:
+    def is_green(self,green_minimum:int,g_r_delta_minimum:int) -> bool:
         """
         Détecte la présence de vert.
         Le vert est considéré comme détecté si :
-          - la valeur de G est supérieure ou égale à greenMinimum,
-          - et si la différence (G - R) est supérieure ou égale à G_R_DeltaMinimum.
+          - la valeur de G est supérieure ou égale à green_minimum,
+          - et si la différence (G - R) est supérieure ou égale à g_r_delta_minimum.
         """
         try:
             r, g, b = self._rgb_sensor.readValue()
-            if g < greenMinimum:
+            if g < green_minimum:
                 return False
-            if (g - r) < G_R_DeltaMinimum:
+            if (g - r) < g_r_delta_minimum:
                 return False
             return True
         except Exception as e:
