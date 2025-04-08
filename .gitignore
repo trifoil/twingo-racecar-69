@@ -13,3 +13,5 @@ env
 *.toc
 *.log
 *.aux
+
+.idea/workspace.xml
