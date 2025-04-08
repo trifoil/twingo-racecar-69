@@ -15,7 +15,7 @@ class Rgb_Sensor(Sensor):
     
     def read_value(self):
         """ return un tuple de valeur (r,g,b) en entiers"""
-        if self._sensor.color_rbg_bytes is None:
+        if self._sensor.color_rgb_bytes is None:
             raise ValueError("Erreur de lecture du capteur RGB")
         return self._sensor.color_rgb_bytes
         

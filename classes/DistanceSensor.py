@@ -11,14 +11,15 @@ class Distance_Sensor(Sensor):
         self._side = side.capitalize()
         self._lock = threading.Lock()
         self._setup_gpio_once()
-
+        
     def _setup_gpio_once(self):
         """Initialisation des broches (appelée une seule fois)"""
+        GPIO.setmode(GPIO.BCM)
         GPIO.setup(self._pin_trig, GPIO.OUT)
         GPIO.setup(self._pin_echo, GPIO.IN)
 
     def read_value(self) -> float:
-        with self.__lock:
+        with self._lock:
             try:
                 GPIO.output(self._pin_trig, True)
                 time.sleep(0.00001)
@@ -57,39 +58,41 @@ class Distance_Sensor(Sensor):
     def side(self):
         return self._side
 
-if __name__ == "__main__":
-    def show_1000_distances(capteur):
-        for _ in range(1000):
-            value = capteur.readValue()
-            if value is not None:
-                print(f"{capteur.side}: {value} cm")
-            else:
-                print(f"{capteur.side}: erreur de lecture")
-            time.sleep(0.05)  # pour éviter de spammer le capteur
+# if __name__ == "__main__":
+#     front_distance_test = Distance_Sensor(6,5,'front')
+#     print(front_distance_test.read_value())
+#     def show_1000_distances(capteur):
+#         for _ in range(1000):
+#             value = capteur.readValue()
+#             if value is not None:
+#                 print(f"{capteur.side}: {value} cm")
+#             else:
+#                 print(f"{capteur.side}: erreur de lecture")
+#             time.sleep(0.05)  # pour éviter de spammer le capteur
 
-    # Init GPIO une seule fois
-    GPIO.setmode(GPIO.BCM)
+#     # Init GPIO une seule fois
+#     GPIO.setmode(GPIO.BCM)
 
-    # Crée les capteurs
-    capteurDroite = Distance_Sensor(23, 12, 'droite')
-    capteurGauche = Distance_Sensor(24, 16, 'gauche')
-    capteurDevant = Distance_Sensor(25, 20, 'devant')
+#     # Crée les capteurs
+#     capteurDroite = Distance_Sensor(23, 12, 'droite')
+#     capteurGauche = Distance_Sensor(24, 16, 'gauche')
+#     capteurDevant = Distance_Sensor(25, 20, 'devant')
 
-    # Crée les threads
-    threads = [
-        threading.Thread(target=_, ar_gs=(capteurDevant,)),
-        threading.Thread(target=_, ar_gs=(capteurGauche,)),
-        threading.Thread(target=_, ar_gs=(capteurDroite,))
-    ]
+#     # Crée les threads
+#     threads = [
+#         threading.Thread(target=_, ar_gs=(capteurDevant,)),
+#         threading.Thread(target=_, ar_gs=(capteurGauche,)),
+#         threading.Thread(target=_, ar_gs=(capteurDroite,))
+#     ]
 
-    # Démarre les threads
-    for th in threads:
-        th.start()
+#     # Démarre les threads
+#     for th in threads:
+#         th.start()
 
-    # Attente
-    for th in threads:
-        th.join()
+#     # Attente
+#     for th in threads:
+#         th.join()
 
-    # Nettoyage des GPIO à la toute fin
-    GPIO.cleanup()
-    print("done")
+#     # Nettoyage des GPIO à la toute fin
+#     GPIO.cleanup()
+#     print("done")
