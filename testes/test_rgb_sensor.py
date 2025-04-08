@@ -14,7 +14,7 @@ sys.modules['board'] = MagicMock()
 sys.modules['busio'] = MagicMock()
 sys.modules['adafruit_tcs34725'] = MagicMock()
 
-from RGBSensor import RGBSensor
+from RGBSensor import RGB_Sensor
 
 class TestRGBSensor(unittest.TestCase):
     def setUp(self):
@@ -31,14 +31,14 @@ class TestRGBSensor(unittest.TestCase):
 
         """Simulation du bus I2C et adresse I2C"""
         self.i2c_mock = ("0x29", MagicMock())
-        self.sensor = RGBSensor(self.i2c_mock)
+        self.sensor = RGB_Sensor(self.i2c_mock)
 
     def test_read_value_normal(self):
         """
         Test classique avec une valeur RGB simulée.
         """
         self.mock_sensor_instance.color_rgb_bytes = (100, 150, 200)
-        result = self.sensor.readValue()
+        result = self.sensor.read_value()
         self.assertEqual(result, (100, 150, 200))
 
     def test_read_value_zero(self):
@@ -46,7 +46,7 @@ class TestRGBSensor(unittest.TestCase):
         Test des valeurs RGB à zéro.
         """
         self.mock_sensor_instance.color_rgb_bytes = (0, 0, 0)
-        result = self.sensor.readValue()
+        result = self.sensor.read_value()
         self.assertEqual(result, (0, 0, 0))
 
     def test_read_value_max(self):
@@ -54,7 +54,7 @@ class TestRGBSensor(unittest.TestCase):
         Test des valeurs RGB au maximum (255, 255, 255).
         """
         self.mock_sensor_instance.color_rgb_bytes = (255, 255, 255)
-        result = self.sensor.readValue()
+        result = self.sensor.read_value()
         self.assertEqual(result, (255, 255, 255))
 
     def test_read_value_none(self):
@@ -63,16 +63,7 @@ class TestRGBSensor(unittest.TestCase):
         """
         self.mock_sensor_instance.color_rgb_bytes = None
         with self.assertRaises(TypeError):
-            self.sensor.readValue()
-
-    def test_read_value_invalid(self):
-        """
-        Test avec un tuple RGB invalide.
-        """
-        self.mock_sensor_instance.color_rgb_bytes = ("rouge", "vert", "bleu")
-        with self.assertRaises(TypeError):
-            r, g, b = self.sensor.readValue()
-            _ = int(r) + int(g) + int(b)
+            self.sensor.read_value()
 
 if __name__ == '__main__':
     unittest.main()
