@@ -22,7 +22,7 @@ class Motor_Manager():
         :param new_speed: la vitesse des moteurs en % de la vitesse maximale (entre -100 et 100)
         """
         is_going_forward = new_speed > 0
-        speed_percentage = abs(speed)
+        speed_percentage = abs(new_speed)
         self._set_speed_with_percentage_and_if_its_going_forward(speed_percentage, is_going_forward)
 
 
@@ -56,9 +56,9 @@ class Motor_Manager():
             if safe_speed_percentage == 0:
                 motor.stop_free_wheels()
             else:
-                motors.set_direction(is_going_forward)
+                motor.set_direction(is_going_forward)
                 pwm_16_bits = (safe_speed_percentage/100.0) * bits_16
-                channel = self._pwm_driver.channels[motor.pinEnable]
+                channel = self._pwm_driver.channels[motor.pin_enable]
                 channel.duty_cycle = int((safe_speed_percentage/100.0) * bits_16)
 
 
@@ -79,7 +79,7 @@ class Motor_Manager():
         elif (value > max):
             return max
         else:
-            return min
+            return value
 
 
     def _angle_to_pwm(self, angle: int) -> int:
