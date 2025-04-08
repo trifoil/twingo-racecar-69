@@ -4,7 +4,7 @@ le motor manager
 """
 
 
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 """
 Constructeur qui va comprendre :
