@@ -1,0 +1,117 @@
+\documentclass{beamer}
+\usepackage{tikz}
+\usepackage{xcolor}
+
+% Color definitions
+\definecolor{accent}{RGB}{200,0,0} % Red accent color
+
+% Background setup for ALL slides (including plain ones)
+\setbeamertemplate{background}{
+	\begin{tikzpicture}[remember picture,overlay]
+		% Main logo top left
+		\node[anchor=north west, xshift=2mm, yshift=-3mm] at (current page.north west) {
+			\includegraphics[height=10mm]{logo.png}
+		};
+		% FWB logo bottom left
+		\node[anchor=south west, xshift=2mm, yshift=2mm] at (current page.south west) {
+			\includegraphics[height=10mm]{fwb.png}
+		};
+		% Dots pattern bottom right
+		\node[anchor=south east, xshift=-10mm, yshift=3mm] at (current page.south east) {
+			\includegraphics[height=5mm]{dots.png}
+		};
+	\end{tikzpicture}
+}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Title color settings
+\setbeamercolor{title}{fg=black}
+\setbeamercolor{frametitle}{fg=accent}
+
+% Custom right-aligned frametitle template
+\setbeamertemplate{frametitle}{
+	\vspace{1em} % Add some vertical space
+	\leavevmode
+	\begin{beamercolorbox}[wd=\paperwidth,ht=1.2em,dp=1em,right]{frametitle}
+		\insertframetitle\hspace*{1em} % Right-aligned with 1em right margin
+	\end{beamercolorbox}
+}
+
+% Title page
+\title{Sprint Review 1}
+\author{}
+\date{}
+
+\begin{document}
+	
+	% Title frame with all requested information
+	\begin{frame}
+		\begin{tikzpicture}[remember picture,overlay]
+			% Main title at the top
+			\node[anchor=north, yshift=-2cm] at (current page.north) {
+				\begin{minipage}{\textwidth}
+					\centering
+					{\usebeamercolor[fg]{title}\usebeamerfont{title}\Huge\bfseries Titre de la présentation\par}
+				\end{minipage}
+			};
+			
+			% Section below title
+			\node[anchor=north, yshift=1.5cm] at (current page.center) {
+				\begin{minipage}{\textwidth}
+					\centering
+					{\Large\bfseries Section\par}
+				\end{minipage}
+			};
+			
+			% "Étudiants" heading with names
+			\node[anchor=center] at (current page.center) {
+				\begin{minipage}{0.8\textwidth}
+					\centering
+					{\Large\bfseries Étudiants}\\[0.5em]
+					\begin{tabular}{l}
+						Colle Joulian \\
+						Deneyer Tom \\
+						Kruczynski Mathis \\
+						Mauroit Antoine \\
+						Staquet Esteban \\
+						Vangeebergen Augustin
+					\end{tabular}
+				\end{minipage}
+			};
+			
+			% Group number and year at bottom
+			\node[anchor=south, yshift=2cm] at (current page.south) {
+				\begin{minipage}{\textwidth}
+					\centering
+					\begin{tabular}{c}
+						{\Large\bfseries Groupe 5} \\
+						{\Large\bfseries  2024-2025}
+					\end{tabular}
+				\end{minipage}
+			};
+		\end{tikzpicture}
+	\end{frame}
+	
+	% Regular content frame with right-aligned title
+	\begin{frame}
+		\frametitle{First Content Slide}
+		This slide has a right-aligned title in accent color.
+		\begin{itemize}
+			\item Item 1
+			\item Item 2
+			\item Item 3
+		\end{itemize}
+	\end{frame}
+	
+	% Another example frame
+	\begin{frame}
+		\frametitle{Another Slide With Longer Title}
+		This demonstrates that longer titles will also be right-aligned properly.
+		\begin{block}{Example Block}
+			Some content in a block.
+		\end{block}
+	\end{frame}
+	
+\end{document}
