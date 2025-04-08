@@ -1,0 +1,282 @@
+\documentclass[a4paper, 12pt]{article}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz} % For precise background positioning
+\usepackage{eso-pic} % For adding content to every page
+
+% Correction pour l'erreur de headheight
+\setlength{\headheight}{14.5pt}
+
+\setlist[itemize]{label=\textbullet}
+
+% Configuration de la page
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+% Style des titres
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+
+% Style des listings
+\lstset{
+	basicstyle=\ttfamily\small,
+	breaklines=true,
+	frame=single,
+	backgroundcolor=\color{gray!10},
+	keywordstyle=\color{blue},
+	commentstyle=\color{green!50!black},
+	stringstyle=\color{red},
+	showstringspaces=false,
+	literate=
+	{é}{{\'e}}1
+	{è}{{\`e}}1
+	{ê}{{\^e}}1
+	{ë}{{\"e}}1
+	{É}{{\'E}}1
+	{Ê}{{\^E}}1
+	{à}{{\`a}}1
+	{â}{{\^a}}1
+	{ç}{{\c c}}1
+	{Ç}{{\c C}}1
+	{ù}{{\`u}}1
+	{û}{{\^u}}1
+}
+
+% Add FWB logo to every page
+\AddToShipoutPictureBG{%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south east, xshift=-2.5cm, yshift=1cm] at (current page.south east)
+		{\includegraphics[width=0.3\textwidth]{fwb.png}};
+	\end{tikzpicture}%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south west, xshift=2.5cm, yshift=0.75cm] at (current page.south west)
+		{\includegraphics[width=0.2\textwidth]{logo.png}};
+	\end{tikzpicture}%
+	\begin{tikzpicture}[remember picture,overlay]
+		\node[anchor=south west, xshift=1cm, yshift=1cm] at (current page.south west)
+		{\includegraphics[width=0.02\textwidth]{side.png}};
+	\end{tikzpicture}%
+}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\thepage}
+\lhead{Projet Voiture - Groupe X}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Page de garde
+\title{}
+\author{}
+\date{}
+
+% Custom title page with background image
+\renewcommand{\maketitle}{%
+	\begin{titlepage}
+		% Background image
+		\begin{tikzpicture}[remember picture,overlay]
+			\node[anchor=north west, inner sep=0pt] at (current page.north west)
+			{\includegraphics[width=\paperwidth]{entete.png}};
+		\end{tikzpicture}
+		
+		% Content with proper vertical spacing
+		\null  % Needed to start a new paragraph
+		\vspace*{5cm} % Adjust this value to position your content lower
+		
+		\centering
+		{\large Gestion de projet \\}
+		\vspace{0.5cm}
+		{\LARGE\textbf{Projet Voiture 2IRT} \\}
+		\vspace{0.5cm}
+		{\large Choix technologiques \\}
+		
+		\vspace{6cm}
+		
+		\begin{flushright} % Left alignment for the following content
+			\textbf{Année Académique} \\
+			2024 - 2025 \\
+			\vspace{0.5cm}
+			\textbf{Groupe} \\
+			5 \\
+			\vspace{0.5cm}
+			\textbf{Membres} \\
+			Colle Joulian \\
+			Deneyer Tom \\
+			Kruczynski Mathis \\
+			Mauroit Antoine \\
+			Staquet Esteban \\
+			Vangeebergen Augustin \\
+		\end{flushright}
+	\end{titlepage}
+}
+
+\begin{document}
+	% Page de garde
+	\maketitle
+	\thispagestyle{empty}
+	\newpage
+	
+	% Table des matières
+	\tableofcontents
+	\thispagestyle{empty}
+	\newpage
+	
+	% Corps du document
+	\setcounter{page}{1}
+	
+	\section{Choix Technologiques Matériels}
+	
+	\subsection{Le Raspberry Pi comme Solution Optimale}
+	
+	Le choix du Raspberry Pi 3 Modèle B comme plateforme centrale pour ce projet s'est imposé face aux microcontrôleurs traditionnels comme Arduino pour plusieurs raisons fondamentales :
+	
+	\begin{itemize}
+		\item \textbf{Puissance de calcul} : Contrairement aux microcontrôleurs classiques, le Raspberry Pi intègre un processeur quad-core à 1.2GHz et 1GB de RAM, permettant d'exécuter un système d'exploitation complet (Raspbian) et de gérer simultanément :
+		\begin{itemize}
+			\item Le traitement des données des capteurs en temps réel
+			\item Les algorithmes de navigation (relativement) complexes
+			\item La communication réseau
+		\end{itemize}
+		
+		\item \textbf{Connectivité intégrée} : Le Raspberry Pi offre nativement :
+		\begin{itemize}
+			\item Wi-Fi 802.11n et Bluetooth 4.1 pour les communications sans fil
+			\item 4 ports USB pour connecter des périphériques additionnels
+			\item Interface HDMI pour le débogage
+		\end{itemize}
+		
+		\item \textbf{Multitâching} : La capacité à exécuter plusieurs processus en parallèle est cruciale pour :
+		\begin{itemize}
+			\item Gérer simultanément les capteurs et les moteurs
+			\item Maintenir une connexion SSH active
+			\item Exécuter un serveur web pour l'interface de contrôle
+		\end{itemize}
+		
+		\item \textbf{Écosystème logiciel} : L'environnement Linux permet d'utiliser :
+		\begin{itemize}
+			\item Python 3 comme langage principal avec toutes ses bibliothèques
+			\item Des outils professionnels de versioning (Git)
+			\item Des frameworks de test et d'intégration continue
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection{Limitations des Microcontrôleurs Traditionnels}
+	
+	Les solutions comme Arduino ou STM32, bien que performantes pour certaines applications, présentent des limitations majeures pour ce projet :
+	
+	\begin{itemize}
+		\item \textbf{Capacité de traitement insuffisante} pour les algorithmes avancés de détection d'obstacles et d'optimisation de trajectoire
+		
+		\item \textbf{Absence de système d'exploitation} rendant complexe :
+		\begin{itemize}
+			\item La gestion concurrente des tâches
+			\item Le débogage avancé
+			\item Les communications réseau
+		\end{itemize}
+		
+		\item \textbf{Connectivité limitée} nécessitant des shields additionnels pour :
+		\begin{itemize}
+			\item Le Wi-Fi/Bluetooth
+			\item Le stockage de données
+			\item Les interfaces utilisateur
+		\end{itemize}
+		
+		\item \textbf{Espace mémoire restreint} incompatible avec :
+		\begin{itemize}
+			\item Le stockage des logs de diagnostic
+			\item L'exécution de bibliothèques complexes
+			\item La gestion de protocoles réseau complets
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection{Comparaison avec d'Autres Solutions}
+	
+	\begin{table}[h]
+		\centering
+		\caption{Comparatif des plateformes matérielles}
+		\begin{tabular}{|l|c|c|c|}
+			\hline
+			\textbf{Caractéristique} & \textbf{Raspberry Pi 3} & \textbf{Arduino Mega} & \textbf{STM32F4} \\
+			\hline
+			Processeur & Quad-core 1.2GHz & 16MHz & 180MHz \\
+			\hline
+			Mémoire & 1GB RAM & 8KB RAM & 192KB RAM \\
+			\hline
+			Système d'exploitation & Linux & Aucun & RTOS optionnel \\
+			\hline
+			Connectivité & Wi-Fi/BT intégrés & Requiert shields & Requiert modules \\
+			\hline
+			Langages supportés & Python, C++, etc. & C/C++ & C/C++ \\
+			\hline
+			Prix & \textasciitilde35€ & \textasciitilde40€ & \textasciitilde25€ \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	Ce tableau montre clairement l'avantage du Raspberry Pi en termes de rapport performance/prix pour les besoins spécifiques de ce projet.
+	
+	\section{Choix Technologiques Logiciels}
+	
+	\subsection{Système d'Exploitation}
+	
+	Le choix s'est porté sur \textbf{Raspbian} (version GUI) pour plusieurs raisons techniques :
+	
+	\begin{itemize}
+		\item \textbf{Compatibilité matérielle} : Support natif de tous les composants du projet
+		\item \textbf{Stabilité} : Distribution officielle maintenue par la fondation Raspberry Pi
+		\item \textbf{Outils intégrés} : Inclut par défaut :
+		\begin{itemize}
+			\item Gestionnaire de paquets apt
+			\item Interfaces de configuration matérielle
+			\item Environnement de développement complet
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection{Langage de Programmation}
+	
+	Python 3 a été sélectionné comme langage principal pour :
+	
+	\begin{itemize}
+		\item \textbf{Productivité} : Syntaxe claire permettant un développement rapide
+		\item \textbf{Bibliothèques spécialisées} :
+		\begin{itemize}
+			\item RPi.GPIO pour le contrôle des GPIO
+			\item NumPy pour les calculs matriciels
+			\item Matplotlib pour la visualisation des données
+		\end{itemize}
+		
+		\item \textbf{Communauté active} : Large base d'utilisateurs et documentation abondante
+		\item \textbf{Portabilité} : Fonctionne sur tous les systèmes d'exploitation
+	\end{itemize}
+	
+	\subsection{Outils de Développement}
+	
+	L'environnement logiciel comprend :
+	
+	\begin{itemize}
+		\item \textbf{Git} : Pour le versioning et la collaboration en équipe
+		\item \textbf{SSH/TightVNC} : Permet le développement à distance
+		\item \textbf{UnitTest} : Framework de tests unitaires intégré à Python
+	\end{itemize}
+	
+	\subsection{Architecture Logicielle}
+	
+	L'application suit une architecture modulaire :
+	
+	\begin{itemize}
+		\item \textbf{Couche matérielle} : Drivers pour les capteurs et actionneurs
+		\item \textbf{Couche contrôle} : Algorithmes de navigation et détection
+		\item \textbf{Couche communication} : Gestion des connexions réseau
+		\item \textbf{Interface utilisateur} : Console et interface web
+	\end{itemize}
+	
+	Cette architecture permet une maintenance aisée et une bonne séparation des préoccupations.
+\end{document}
