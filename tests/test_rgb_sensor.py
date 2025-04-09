@@ -14,7 +14,7 @@ sys.modules['board'] = MagicMock()
 sys.modules['busio'] = MagicMock()
 sys.modules['adafruit_tcs34725'] = MagicMock()
 
-from RGBSensor import RGB_Sensor
+from classes.RGB_Sensor import RGB_Sensor
 
 class TestRGBSensor(unittest.TestCase):
     def setUp(self):
@@ -62,7 +62,7 @@ class TestRGBSensor(unittest.TestCase):
         Test si le capteur retourne None : le test doit lever une exception ou le gérer.
         """
         self.mock_sensor_instance.color_rgb_bytes = None
-        with self.assertRaises(TypeError):
+        with self.assertRaises(ValueError):
             self.sensor.read_value()
 
 if __name__ == '__main__':
