@@ -75,7 +75,7 @@ from classes.DC_motor import DC_Motor
 from classes.Servo_Motor import Servo_Motor
 
 
-class TestMotorManager(unittest.TestCase):
+class Test_Motor_Manager(unittest.TestCase):
 
     motor_manager: Motor_Manager
 
