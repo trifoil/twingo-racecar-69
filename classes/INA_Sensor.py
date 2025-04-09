@@ -18,6 +18,6 @@ class INA_Sensor(Sensor):
         """
         return {
             "BusVolatage" : self._sensor.bus_voltage,
-            "Shunt Voltage" : self._sensor.shunt_voltage,
+            "ShuntVoltage" : self._sensor.shunt_voltage,
             "Current" : self._sensor.current
         }

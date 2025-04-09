@@ -15,11 +15,14 @@ from classes.Servo_Motor import Servo_Motor
 
 moteur1 = DC_Motor(4,17,18)
 moteur2 = DC_Motor(5,27,22)
-servo_test = Servo_Motor(0,90)
+servo_test = Servo_Motor(0,50)
 motor_manager = Motor_Manager([moteur1,moteur2],servo_test,(i2c,0x40))
+
+motor_manager.set_angle(0)
 motor_manager.set_speed(0)
-i = 100
-while i >=-100:
-    motor_manager.set_angle(i)
-    sleep(0.05)
-    i-=1
+
+# i = 100
+# while i >=-100:
+#     motor_manager.set_angle(i)
+#     sleep(0.05)
+#     i-=1

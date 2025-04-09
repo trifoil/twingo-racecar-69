@@ -14,7 +14,8 @@ class Motor_Manager():
         busio_i2c = i2c[0]
         i2c_addresse = i2c[1]
         # self._pwm_driver = PCA9685(busio_i2c,i2c_addresse)
-        self._pwm_driver = PCA9685(busio_i2c,address = i2c_addresse)
+        # self._pwm_driver = PCA9685(busio_i2c,address = i2c_addresse)
+        self._pwm_driver = PCA9685(busio_i2c)
         self._pwm_driver.frequency = 50
 
     def set_speed(self,new_speed: int) -> None:
@@ -34,7 +35,7 @@ class Motor_Manager():
         """
         servo_duty = self._angle_to_pwm(int(new_angle))
         print(servo_duty)
-        self._pwm_driver.channels[self._servo_direction.board_channel].duty_cycle = servo_duty
+        self._pwm_driver.channels[self._servo_direction.board_channel].duty_cycle = 65535- servo_duty
 
 
     def initialize_motors(self) -> None:
@@ -59,7 +60,7 @@ class Motor_Manager():
             else:
                 motor.set_direction(is_going_forward)
                 channel = self._pwm_driver.channels[motor.pin_enable]
-                channel.duty_cycle = int((safe_speed_percentage/100.0) * bits_16)
+                channel.duty_cycle =65535 - int((safe_speed_percentage/100.0) * bits_16)
 
 
     def _range_value(self, value: int, min_val: int = -100, max_val: int = 100) -> int:
