@@ -15,12 +15,17 @@ Constructeur de la classe :
 """
 class Servo_Motor():
     def __init__(self, board_channel:int, range_degrees:int):
+        assert board_channel in range(16)
+        
         self._board_channel = board_channel
         self._range_degrees = range_degrees
         self._min_pulse = 1.0 # in ms
         self._max_pulse = 2.0 # in ms
         self._initial_angle = 90
         self._frequency = 60
+
+        assert (self._initial_angle - range_degrees) >= 0
+        assert (self._initial_angle + range_degrees) <= 180
 
 
 
