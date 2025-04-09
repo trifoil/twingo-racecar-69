@@ -19,10 +19,10 @@ class Servo_Motor():
         
         self._board_channel = board_channel
         self._range_degrees = range_degrees
-        self._min_pulse = 1.0 # in ms
-        self._max_pulse = 2.0 # in ms
+        self._min_pulse = 0.5 # in ms
+        self._max_pulse = 2.5 # in ms
         self._initial_angle = 90
-        self._frequency = 60
+        self._frequency = 50
 
         assert (self._initial_angle - range_degrees) >= 0
         assert (self._initial_angle + range_degrees) <= 180

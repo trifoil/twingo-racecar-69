@@ -8,10 +8,10 @@ from unittest.mock import MagicMock, patch
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 print("import des classes...")
-from classes.DistanceSensor import Distance_Sensor
-from classes.LineSensor import Line_Sensor
-from classes.INASensor import Ina_Sensor
-from classes.RGBSensor import Rgb_Sensor
+from classes.Distance_Sensor import Distance_Sensor
+from classes.Line_Sensor import Line_Sensor
+from classes.INA_Sensor import INA_Sensor
+from classes.RGB_Sensor import RGB_Sensor
 
 print("import Done !")
 print("création I2C...")
@@ -22,8 +22,8 @@ front_distance_test = Distance_Sensor(6,5,'front')
 left_distance_test = Distance_Sensor(11,9,'left')
 right_distance_test = Distance_Sensor(26,19,'right')
 line_sensor_test = Line_Sensor(20)
-rgb_sensort_test = Rgb_Sensor((i2c,0x29))
-ina_sensor_test = Ina_Sensor((i2c,0x40))
+rgb_sensort_test = RGB_Sensor((i2c,0x29))
+ina_sensor_test = INA_Sensor((i2c,0x40))
 
 print("Capteurs Done !")
 """

@@ -9,12 +9,12 @@ class Motor_Manager():
         :param motors: liste des moteurs (généralement 2) utilisés pour la propulsion du véhicule  
         :param i2c: un tuple de deux éléments, le premier est l'adresse i2c et le second est une instance de busio.I2C  
         """
-        self._dc_motors_propulsion: list[DC_Motor] = motors
-        self._servo_direction: Servo_Motor = servo
+        self._dc_motors_propulsion = motors
+        self._servo_direction = servo
         busio_i2c = i2c[0]
         i2c_addresse = i2c[1]
-        self._pwm_driver: PCA9685 = PCA9685(busio_i2c)
-        self._pwm_driver.frequency = self._servo_direction.frequency
+        self._pwm_driver = PCA9685(busio_i2c)
+        self._pwm_driver.frequency = 50
 
     def set_speed(self, new_speed: int) -> None:
         """
@@ -31,9 +31,8 @@ class Motor_Manager():
         Définit l’angle de rotation actuel des roues utilisées par le gestionnaire.
         :param new_angle: l’angle de rotation en pourcentage de l’angle maximal (entre -100 % et 100 %)
         """
-        servo_duty = self._angle_to_pwm(new_angle)
-        pca_channel = self._pwm_driver.channels[self._servo_direction.board_channel]
-        pca_channel.duty_cycle = servo_duty
+        servo_duty = self._angle_to_pwm(int(new_angle))
+        self._pwm_driver.channels[self._servo_direction.board_channel].duty_cycle = ((2**16)-1) - servo_duty
 
 
     def initialize_motors(self) -> None:
@@ -57,17 +56,16 @@ class Motor_Manager():
                 motor.stop_free_wheels()
             else:
                 motor.set_direction(is_going_forward)
-                pwm_16_bits = (safe_speed_percentage/100.0) * bits_16
                 channel = self._pwm_driver.channels[motor.pin_enable]
-                channel.duty_cycle = int((safe_speed_percentage/100.0) * bits_16)
+                channel.duty_cycle =65535 - int((safe_speed_percentage/100.0) * bits_16)
 
 
-    def _range_value(self, value: int, min: int =-100, max: int = 100):
+    def _range_value(self, value: int, min_val: int = -100, max_val: int = 100) -> int:
         """
-        Limite une valeur entre une valeur 'min' et une valeur 'max'. Si la valeur est inférieure à 'min', elle sera renvoyée.
+        Limite une valeur entre min_val et max_val.
         :param value: la valeur à limiter
-        :param min: la valeur minimale de la plage
-        :param max: la valeur maximale de la plage
+        :param min_val: la valeur minimale (par défaut -100)
+        :param max_val: la valeur maximale (par défaut 100)
         """
         assert isinstance(value, int) 
         assert isinstance(min, int)
@@ -81,21 +79,20 @@ class Motor_Manager():
         else:
             return value
 
+    def _angle_to_pwm(self,angle: int) -> int:
+        center_angle = self._servo_direction.initial_angle
+        range_deg = self._servo_direction.range_degrees
+        min_pulse_ms = self._servo_direction.min_pulse
+        max_pulse_ms = self._servo_direction.max_pulse
+        freq = self._servo_direction.frequency
 
-    def _angle_to_pwm(self, angle: int) -> int:
-        """
-        Convertit un angle de direction en PWM sur 16 bits.
-        :param angle: l'angle en % de -100.0 à 100.0
-        """
-        bits_16 = (2 ** 16)-1
-        servo = self._servo_direction
-        period_ms = 1000.0 / servo.freqency
+        periode_ms = 1000.0 / freq  # ex: 1000/60 ≈ 16.67 ms
         
-        min_duty = servo.min_pulse / period_ms
-        max_duty = servo.max_pulse / period_ms
-
-        normalized_angle = servo.initial_angle + (angle / 100.0) * servo.range_degrees
-
-        duty_fraction = min_duty + (max_duty - min_duty) * (normalized_angle / 180.0)
-
-        return int(duty_fraction * bits_16)
+        t_min_duty = min_pulse_ms / periode_ms   # ex: ≈ 1.0/16.67 ≈ 0.06
+        t_max_duty = max_pulse_ms / periode_ms   # ex: ≈ 2.0/16.67 ≈ 0.12
+        
+        normalized_angle = center_angle + (angle / 100.0) * range_deg
+        
+        duty_fraction = t_min_duty + (t_max_duty - t_min_duty) * (normalized_angle / 180.0)
+        
+        return int(duty_fraction * 65535)

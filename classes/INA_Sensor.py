@@ -19,7 +19,7 @@ class INA_Sensor(Sensor):
         Return un dictionaire avec comme clef le nom à récupérer, courant, power, ... et en valeur, la valeur lue par le capteur
         """
         return {
-            "BusVoltage" : self._sensor.bus_voltage,
+            "BusVolatage" : self._sensor.bus_voltage,
             "ShuntVoltage" : self._sensor.shunt_voltage,
             "Current" : self._sensor.current
         }

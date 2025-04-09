@@ -68,10 +68,10 @@ class MotorManager():
         :return: Valeur duty_cycle sur 16 bits (0 à 65535)
         """
         center_angle = self.__servoDirection.centerAngle
-        range_deg = self.__servoDirection.rangeDegrees
+        range_deg = self.__servoDirection.range_degrees
         min_pulse_ms = self.__servoDirection.minPulse
         max_pulse_ms = self.__servoDirection.maxPulse
-        freq = self.__servoDirection.frequency
+        freq = self.__servoDirection._frequency
 
         periode_ms = 1000.0 / freq  # ex: 1000/60 ≈ 16.67 ms
         
