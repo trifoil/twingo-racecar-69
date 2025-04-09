@@ -23,7 +23,7 @@ left_distance_test = Distance_Sensor(11,9,'left')
 right_distance_test = Distance_Sensor(26,19,'right')
 line_sensor_test = Line_Sensor(20)
 rgb_sensort_test = RGB_Sensor((i2c,0x29))
-ina_sensor_test = INA_Sensor((i2c,0x40))
+ina_sensor_test = INA_Sensor((i2c,0x44))
 moteur1 = DC_Motor(4,17,18)
 moteur2 = DC_Motor(5,27,22)
 servo_test = Servo_Motor(0,50)
@@ -43,9 +43,11 @@ sensor_manager = Sensor_Manager(sensors)
 
 motor_manager.set_angle(0)
 motor_manager.set_speed(0)
-
+""" Read values """  
 print("distances...", sensor_manager.get_distance())
 print("Line ...", sensor_manager.detect_line())
 print("INA: ",sensor_manager.get_current())
 print("is_red", sensor_manager.is_red(50,10))
 print("is_green", sensor_manager.is_green(50,10))
+
+print("All sensors are good")
