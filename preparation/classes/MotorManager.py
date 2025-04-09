@@ -1,4 +1,4 @@
-from classes.DCMotor import DCMotor
+from preparation.classes.DCMotor import DCMotor
 from classes.ServoMotor import ServoMotor
 import adafruit_pca9685
 import busio
