@@ -15,7 +15,7 @@ Constructeur de la classe :
 """
 class Servo_Motor():
     def __init__(self, board_channel:int, range_degrees:int):
-        assert board_channel in [i for i in range(16)]
+        assert board_channel in range(16)
         
         self._board_channel = board_channel
         self._range_degrees = range_degrees
