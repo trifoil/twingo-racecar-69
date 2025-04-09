@@ -20,17 +20,8 @@ classes = os.path.join(current_dir, '..','classes')
 sys.path.insert(0, classes)
 
 """Liste complète des imports des classes qui seront utilisés"""
-from classes import DC_Motor
-from classes import Distance_Sensor
-from classes import I2C_Sensor
-from classes import INA_Sensor
-from classes import Line_Sensor
-from classes import Motor_Manager
-from classes import RGB_Sensor
-from classes import Sensor_Manager
-from classes import Servo_Motor
-from classes import Twingo_Race_Car
 
+from classes import Car
 
 """Mock de RPi.GPIO, time, board et busio, ils serviront de façon général et suffisent pour les moteurs"""
 sys.modules['RPi'] = MagicMock()
@@ -49,7 +40,7 @@ sys.modules['adafruit_tcs34725'] = MagicMock()
 class Test_Car(unittest.TestCase):
     def setUp(self):
 
-        self.i2c_mock = ???
+        self.i2c_mock = "???"
 
         self.dc_motor_mock_1 = MagicMock()
         self.dc_motor_mock_2 = MagicMock()
@@ -62,9 +53,6 @@ class Test_Car(unittest.TestCase):
         self.rgb_sensor_mock = MagicMock()
         self.ina_sensor_mock = MagicMock()
 
-
-
-
         self.motor_manager_mock = Motor_Manager([self.dc_motor_mock_1,self.dc_motor_mock_2,self.servo_motor_mock],self.i2c_mock)
 
         self.sensor_manager_mock = Sensor_Manager({"line_Sensor" : self.line_sensor_mock,
@@ -74,7 +62,4 @@ class Test_Car(unittest.TestCase):
             "rgb_sensor" : self.rgb_sensor_mock,
             "ina_sensor" : self.ina_sensor_mock})
 
-        self.car = Twingo_Race_Car("Twingo Race Car", self.i2c_mock, self.sensor_manager_mock, self.motor_manager_mock)
-
-
-
+        self.car = Car("Twingo Race Car", self.i2c_mock, self.sensor_manager_mock, self.motor_manager_mock)
