@@ -32,16 +32,14 @@ class TestDistanceSensor(unittest.TestCase):
         self.assertEqual(result, 50.0) """
 
     def test_read_value_out_of_bounds_low(self):
-        """ Distance < 2 cm (trop courte) """
-        # Simule un signal correspondant à une distance trop courte
+        """Simule un signal correspondant à une distance trop courte"""
         self.mock_gpio.input.side_effect = [0, 1, 1, 0]
         self.mock_time.side_effect = [1, 1.00001, 1.00002, 1.00003]
         result = self.sensor.read_value()
         self.assertIsNone(result)
 
     def test_read_value_out_of_bounds_high(self):
-        """ Distance > 400 cm (trop longue) """
-        # Simule un signal correspondant à une distance trop longue
+        """ Simule un signal correspondant à une distance trop longue """
         self.mock_gpio.input.side_effect = [0, 1, 1, 0]
         self.mock_time.side_effect = [1, 1.00001, 1.1, 1.10001]
         result = self.sensor.read_value()
