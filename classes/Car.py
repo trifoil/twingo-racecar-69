@@ -1,11 +1,11 @@
 from classes.Sensor_Manager import Sensor_Manager
-from classes.MotorManager import MotorManager
+from classes.Motor_Manager import Motor_Manager
 import busio
 import board
 import time
 
 class Car:
-    def __init__(self,car_name:str,motor_manager:MotorManager,sensor_manager:Sensor_Manager,const_config:dict):
+    def __init__(self,car_name:str,motor_manager:Motor_Manager,sensor_manager:Sensor_Manager,const_config:dict):
         self._car_name = car_name
         print(f"""
 Initialisation de la voiture : {self._car_name}
