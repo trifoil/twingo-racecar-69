@@ -148,7 +148,64 @@ Initialisation de la voiture : {self._car_name}
         """)
 
 
+    def POST(self) -> bool:
+        """ 
+        Fonction au démarrage de la voiture : effectue un test physique des capteurs et des moteurs
+        Vérifie que chaque capteur renvoie une valeur valide ( diférent de None) et que les moteurs répondent correctement
+         Retourne True si tout est fonctionnel, sinon False.
+        """
+        print("\n===== POST -> Lancement du test physique =====")
 
+        try:
+            """Test capteurs de distance"""
+            print("POST -> Test des capteurs de distance")
+            distances = self._sensor_manager.get_distance()
+            print(f"POST -> Distances (Front, Left, Right): {distances}")
+            if any(d is None for d in distances):
+                print("POST -> Capteur(s) de distance non fonctionnel(s)")
+                return False
+
+            """ Test capteur de ligne """
+            is_line = self._sensor_manager.detect_line()
+            print(f"POST -> Ligne détectée : {'Oui' if is_line else 'Non'}")
+
+            """ Test capteur RGB """
+            print("POST -> Test du capteur RGB")
+            is_red = self._sensor_manager.is_red(red_minimum=100, g_r_delta_minimum=50)
+            is_green = self._sensor_manager.is_green(green_minimum=100, g_r_delta_minimum=50)
+            print(f"POST -> Rouge détecté : {'Oui' if is_red else 'Non'}")
+            print(f"POST -> Vert détecté : {'Oui' if is_green else 'Non'}")
+
+            """ Test capteur INA """
+            print("POST -> Test du capteur INA")
+            current = self._sensor_manager.get_current()
+            if current is None:
+                print("POST -> Capteur INA non fonctionnel")
+                return False
+            print(f"POST -> Courant mesuré : {current} A")
+
+            """ Test moteurs DC """
+            print("POST -> Test des moteurs DC")
+            self._motor_manager.setSpeed(50)
+            time.sleep(1)
+            self._motor_manager.setSpeed(-50)
+            time.sleep(1)
+            self._motor_manager.setSpeed(0)
+
+            """Test servo moteur (direction)"""
+            print("POST -> Test du servo moteur")
+            self._motor_manager.setAngle(-50)
+            time.sleep(0.5)
+            self._motor_manager.setAngle(50)
+            time.sleep(0.5)
+            self._motor_manager.setAngle(0)
+
+            print("POST -> Tous les tests sont PASSÉS")
+            return True
+
+        except Exception as e:
+            print(f"POST -> Erreur pendant le test : {e}")
+            return False
 
 
     
