@@ -207,6 +207,52 @@ Initialisation de la voiture : {self._car_name}
         except Exception as e:
             print(f"POST -> Erreur pendant le test : {e}")
             return False
+        
+        
+    def select_mode(self):
+        """ Fonction de sélection du mode de conduite de la voiture et retourne le mode sélectionné """
+        mode = input(
+            "Sélectionnez le mode de conduite:\n"
+            "1: Course 1 tour\n"
+            "2: Course +1 tour\n"
+            "3: Post\n"
+            "4: Back and Forward\n"
+            "5: Turn 8\n"
+            "6: Quit\n"
+            "Votre choix: "
+        )
+        if mode == "1":
+            print("Mode course 1 tour sélectionné")
+            return "racing"
+        elif mode == "2":
+            print("Mode course +1 tours sélectionné")
+            while True:
+                try:
+                    nombre_tours = int(input("Combien de tours ? "))
+                    if nombre_tours > 0:
+                        print(f"Mode course {nombre_tours} tours sélectionné")
+                        self._target_lap = nombre_tours
+                        return "racing"
+                    else:
+                        print("Veuillez entrer un nombre entier positif.")
+                except ValueError:
+                    print("Entrée invalide. Veuillez entrer un nombre entier.")
+        elif mode == "3":
+            print("Mode post sélectionné")
+            return "post"
+        elif mode == "4":
+            print("Mode back and forward sélectionné")
+            return "back_and_forward"
+        elif mode == "5":
+            print("Mode turn 8 sélectionné")
+            return "turn_8"
+        elif mode == "6":
+            print("Mode quit sélectionné")
+            return "quit"
+        else:
+            print("Mode non valide.")
+            return "stand_by"
+        
     """ Getters"""
     @property
     def motor_manager(self):
