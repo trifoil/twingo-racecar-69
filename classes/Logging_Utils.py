@@ -10,21 +10,27 @@ class Logging_Utils():
     backup_count = 2
 
     @staticmethod
-    def setup_logging_in_main(verbose: bool = True):
+    def setup_logging_in_main(verbose: bool = True, write_file: bool = True):
         logging_format = "| %(levelname)s | %(asctime)s | %(filename)s:%(lineno)s | %(message)s"
         stdoutHandler = logging.StreamHandler(stream=sys.stdout)
         if not os.path.isdir(__class__.logging_folder):
             os.makedirs(__class__.logging_folder)
-        fileWritingHandler = logging.handlers.RotatingFileHandler(
+        if (write_file): fileWritingHandler = logging.handlers.RotatingFileHandler(
             __class__.logging_folder+"/current_logs.txt",
             maxBytes=__class__.logging_file_size_bytes,
             backupCount=__class__.backup_count)
         stdoutHandler.setFormatter(logging.Formatter(logging_format))
-        fileWritingHandler.setFormatter(stdoutHandler)
+        if (write_file): fileWritingHandler.setFormatter(stdoutHandler)
         logger = logging.getLogger("__main__")
-        logger.addHandler(fileWritingHandler)
+        for hdl in logger.handlers:
+            logger.removeHandler(hdl)
+        logger.setLevel(logging.INFO)
+        if (write_file):
+            logger.addHandler(fileWritingHandler)
         if (verbose):
             logger.addHandler(stdoutHandler)
+        if not (write_file or verbose):
+            logger.addHandler(logging.NullHandler())
 
 
     @staticmethod
