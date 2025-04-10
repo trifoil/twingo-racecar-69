@@ -40,9 +40,14 @@ Initialisation de la voiture : {self._car_name}
         print("NEW LAP")
 
     def start_car(self):
-        pass
+        self._current_state = "running"
     def stop_car(self):
-        pass
+        self._current_state = "stand_by"
+        self._motor_manager.setSpeed(0)
+        self._motor_manager.setAngle(0)
+        print(f"""
+{self._car_name} est arrêté.
+              """)
 
     def calculate_next_move(self, distances: tuple, isLine: bool) -> tuple:
         """
@@ -76,17 +81,13 @@ Initialisation de la voiture : {self._car_name}
             new_direction = (10 - right_disc * 10)*-1
             new_speed = 10 - right_disc * 10
         elif right_disc > 10 :
-            new_direction = right_disc /2
+            new_direction = right_disc /2 
             new_speed = 100
         else:
             new_direction = 0
             new_speed = 100
         return (new_direction, new_speed)
-            
-
-        
-
-        return (new_direction, new_speed)
+    
 
     def u_turn(self, direction: str) -> None:
         """
