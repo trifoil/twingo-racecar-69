@@ -33,7 +33,7 @@ dummy_board.SDA = "SDA"
 sys.modules["board"] = dummy_board
 
 import unittest
-from classes.DC_motor import DC_Motor
+from classes.DC_Motor import DC_Motor
 
 class Test_DC_Motor(unittest.TestCase):
     def test_pins_are_differents_and_in_range_of_16(self):
