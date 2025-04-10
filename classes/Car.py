@@ -26,12 +26,27 @@ Initialisation de la voiture : {self._car_name}
         Retourne Vrai si détecté
         Sinon retourne faux
         """
-        front_disc,left_disc,right_disc = distances
-        if (front_disc) < self._const_config["OBSTACLE_MINIMUM_DIST"]:
-            return True
-        return False
-    
-    def count_lap(self,detectedLine:bool) -> None:
+        obstacle = False
+        front, left, right = distances
+
+        if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
+            obstacle = True
+            while obstacle:
+                if left > right:
+                    self._motor_manager.set_angle(-100)
+                    self._motor_manager.set_speed(100)
+
+
+                elif right > left:
+                    self._motor_manager.set_angle(100)
+                    self._motot_manager.set_speed(100)
+
+
+                if front > valeur_obstacle:
+                    obstacle = False
+
+
+def count_lap(self,detectedLine:bool) -> None:
         """
         Détection d'une ligne, si ligne detectée alors nombre de tour +1
         """
