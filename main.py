@@ -68,7 +68,7 @@ def main():
             """ Si la voiture est en mode course, on Récupère les données capteurs, calcul les target, et applique les modifications aux moteurs, en vérifiant les obstacles et conditions de fin de course """ 
             line = TWINGO.sensor_manager.detect_line()
             rgb = TWINGO.sensor_manager.rgb_sensor.read_value()
-            ina = TWINGO.sensor_manager.ina_sensor.read_value()
+            ina = TWINGO.sensor_manager.get_current()
 
             if line:
                 TWINGO.total_laps += 1
@@ -88,7 +88,6 @@ def main():
             if TWINGO.total_laps >= TWINGO.target_lap:
                 print("Course terminée !")
                 TWINGO.stop_car()
-                TWINGO.current_state = "stand_by"
 
         elif TWINGO.current_state == "post":
             """ Si la voiture est en mode post, on fait un test de tous les moteurs et capteurs """
@@ -110,7 +109,7 @@ def main():
                 for i in range(0, -101, -1):
                     TWINGO.motor_manager.set_speed(i)
                     sleep(4/100)
-                TWINGO.motor_manager.initialize_motors()
+                TWINGO.stop_car()
                 print("Allée retour terminé !")
 
         elif TWINGO.current_state == "turn_8":
@@ -121,7 +120,7 @@ def main():
             TWINGO.u_turn('left')
             TWINGO.u_turn('right')
             TWINGO.u_turn('right')
-            TWINGO.motor_manager.initialize_motors()
+            TWINGO.stop_car()
             print("Grand 8 terminé !")
         
         elif TWINGO.current_state == "quit":

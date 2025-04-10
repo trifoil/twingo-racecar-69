@@ -14,7 +14,7 @@ Initialisation de la voiture : {self._car_name}
         self._motor_manager = motor_manager
         self._total_laps = int(0)
         self._last_lap_duration = int(0)
-        self._current_state = "post"
+        self._current_state = "stand_by"
         self._const_config = const_config
         self._target_lap = 0
         print(f"""
@@ -60,12 +60,12 @@ Initialisation de la voiture : {self._car_name}
             self._total_laps +=1
         print("NEW LAP")
 
-    def start_car(self):
-        self._current_state = "running"
+    def start_car(self, mode:str) -> None:
+        self._current_state = mode
     def stop_car(self):
         self._current_state = "stand_by"
-        self._motor_manager.setSpeed(0)
-        self._motor_manager.setAngle(0)
+        self._motor_manager.set_speed(0)
+        self._motor_manager.set_angle(0)
         print(f"""
 {self._car_name} est arrêté.
               """)
@@ -94,10 +94,11 @@ Initialisation de la voiture : {self._car_name}
         """
         front_disc, left_disc, right_disc = distances
 
-        obstacle = self.detect_obstacle(distances)
+        #obstacle = self.detect_obstacle(distances)
         time.sleep(0.01)
         try :
-            if obstacle:
+            #if obstacle:
+            if True:
                 if right_disc < 0:
                   raise ValueError("right_disc cannot be negative")
                 if right_disc > 100:
@@ -172,7 +173,7 @@ Initialisation de la voiture : {self._car_name}
 
         === Données du capteur INA ===
         Bus Voltage: {ina['BusVoltage']} V
-        Shunt Voltage: {ina['Shunt Voltage']} V
+        Shunt Voltage: {ina['ShuntVoltage']} V
         Current: {ina['Current']} A
 
         === Couleur RGB ===
@@ -256,6 +257,8 @@ Initialisation de la voiture : {self._car_name}
         )
         if mode == "1":
             print("Mode course 1 tour sélectionné")
+            self._target_lap = 1
+            self._total_laps = 0
             return "racing"
         elif mode == "2":
             print("Mode course +1 tours sélectionné")

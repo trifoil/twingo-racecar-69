@@ -85,7 +85,7 @@ class Sensor_Manager:
         """
         try:
             sensor_data = self._ina_sensor.read_value()
-            return sensor_data['Current']
+            return sensor_data
         except Exception as e:
             print("Erreur lors de la lecture du courant: ", e)
             return None
@@ -125,3 +125,9 @@ class Sensor_Manager:
         except Exception as e:
             print("Erreur lors de la détection du vert: ", e)
             return False
+    @property
+    def rgb_sensor(self):
+        return self._rgb_sensor
+    @property
+    def ina_sensor(self):
+        return self._ina_sensor
