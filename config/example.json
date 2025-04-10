@@ -1,0 +1,10 @@
+{
+    "should_be_running": false,
+    "laps_elapsed": 2,
+    "laps_total": 3,
+    "lap_start_timestamps": [
+        1744268564.5295732,
+        1744268565.5296812,
+        1744268566.530015
+    ]
+}

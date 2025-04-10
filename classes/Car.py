@@ -14,8 +14,9 @@ Initialisation de la voiture : {self._car_name}
         self._motor_manager = motor_manager
         self._total_laps = int(0)
         self._last_lap_duration = int(0)
-        self._current_state = "stand_by"
+        self._current_state = "post"
         self._const_config = const_config
+        self._target_lap = 0
         print(f"""
 {self._car_name} opérationel !
               """)
@@ -26,12 +27,32 @@ Initialisation de la voiture : {self._car_name}
         Retourne Vrai si détecté
         Sinon retourne faux
         """
-        front_disc,left_disc,right_disc = distances
-        if (front_disc) < self._const_config["OBSTACLE_MINIMUM_DIST"]:
-            return True
-        return False
-    
-    def count_lap(self,detectedLine:bool) -> None:
+        obstacle = False
+        front, left, right = distances
+
+        try:
+            if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
+                obstacle = True
+                while obstacle:
+                    try :
+                        if left > right:
+                            self._motor_manager.set_angle(-100)
+                            self._motor_manager.set_speed(100)
+
+
+                        elif right > left:
+                            self._motor_manager.set_angle(100)
+                            self._motot_manager.set_speed(100)
+                    except TypeError :
+                        self._motor_manager.set_angle(-100)
+
+                    if front > valeur_obstacle:
+                        return obstacle
+
+        except Exception as e:
+            print(f"Un erreur est survenue : {e}")
+
+def count_lap(self,detectedLine:bool) -> None:
         """
         Détection d'une ligne, si ligne detectée alors nombre de tour +1
         """
@@ -72,31 +93,31 @@ Initialisation de la voiture : {self._car_name}
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
+
         obstacle = self.detect_obstacle(distances)
         time.sleep(0.01)
         try :
             if obstacle:
                 if right_disc < 0:
-                    raise ValueError("right_disc cannot be negative")
+                  raise ValueError("right_disc cannot be negative")
                 if right_disc > 100:
                     right_disc = 100
-                
                 if right_disc < 10 :
-                    new_direction = (10 - right_disc * 10)*-1
-                    new_speed = 10 - right_disc * 10
-                elif right_disc > 40 :
-                    new_direction = 90
-                    new_speed = 100
+                    new_direction = -30
+                    new_speed = 50
+                elif right_disc > 40:
+                    new_direction = 70
+                    new_speed = 50
                 elif right_disc > 10 :
-                    new_direction = right_disc /2 
-                    new_speed = 100
+                    new_direction = 30
+                    new_speed = 50
                 else:
                     new_direction = 0
-                    new_speed = 100
+                    new_speed = 50
                 return (new_direction, new_speed)
         except :
             pass
-    
+   
 
     def u_turn(self, direction: str) -> None:
         """
@@ -115,12 +136,15 @@ Initialisation de la voiture : {self._car_name}
             turn_value = 100
         else:
             raise ValueError("La direction doit être 'left' ou 'right'")
-        self._motor_manager.setAngle(turn_value)
-        self._motor_manager.setSpeed(speed) 
-        time.sleep(2.5)
 
-        self._motor_manager.setSpeed(0)
-        self._motor_manager.setAngle(0)
+
+        self._motor_manager.set_angle(turn_value)
+        self._motor_manager.set_speed(speed) 
+        time.sleep(2.4)
+
+
+        self._motor_manager.set_speed(0)
+        self._motor_manager.set_angle(0)
 
     def monitoring(self, distances: tuple, isLine: bool, direction: str, speed: float, ina: dict, rgb: tuple):
         """
@@ -158,7 +182,132 @@ Initialisation de la voiture : {self._car_name}
         """)
 
 
+    def post(self) -> bool:
+        """ 
+        Fonction au démarrage de la voiture : effectue un test physique des capteurs et des moteurs
+        Vérifie que chaque capteur renvoie une valeur valide ( diférent de None) et que les moteurs répondent correctement
+         Retourne True si tout est fonctionnel, sinon False.
+        """
+        print("\n===== POST -> Lancement du test physique =====")
 
+        try:
+            """Test capteurs de distance"""
+            print("POST -> Test des capteurs de distance")
+            distances = self._sensor_manager.get_distance()
+            print(f"POST -> Distances (Front, Left, Right): {distances}")
+            if any(d is None for d in distances):
+                print("POST -> Capteur(s) de distance non fonctionnel(s)")
+                pass 
 
+            """ Test capteur de ligne """
+            is_line = self._sensor_manager.detect_line()
+            print(f"POST -> Ligne détectée : {'Oui' if is_line else 'Non'}")
 
+            """ Test capteur RGB """
+            print("POST -> Test du capteur RGB")
+            is_red = self._sensor_manager.is_red(red_minimum=100, g_r_delta_minimum=50)
+            is_green = self._sensor_manager.is_green(green_minimum=100, g_r_delta_minimum=50)
+            print(f"POST -> Rouge détecté : {'Oui' if is_red else 'Non'}")
+            print(f"POST -> Vert détecté : {'Oui' if is_green else 'Non'}")
+
+            """ Test capteur INA """
+            print("POST -> Test du capteur INA")
+            current = self._sensor_manager.get_current()
+            if current is None:
+                print("POST -> Capteur INA non fonctionnel")
+                return False
+            print(f"POST -> Courant mesuré : {current} A")
+
+            """ Test moteurs DC """
+            print("POST -> Test des moteurs DC")
+            self._motor_manager.set_speed(50)
+            time.sleep(1)
+            self._motor_manager.set_speed(-50)
+            time.sleep(1)
+            self._motor_manager.set_speed(0)
+
+            """Test servo moteur (direction)"""
+            print("POST -> Test du servo moteur")
+            self._motor_manager.set_angle(-50)
+            time.sleep(0.5)
+            self._motor_manager.set_angle(50)
+            time.sleep(0.5)
+            self._motor_manager.set_angle(0)
+
+            print("POST -> Tous les tests sont PASSÉS")
+            return True
+
+        except Exception as e:
+            print(f"POST -> Erreur pendant le test : {e}")
+            return False
+        
+        
+    def select_mode(self):
+        """ Fonction de sélection du mode de conduite de la voiture et retourne le mode sélectionné """
+        mode = input(
+            "Sélectionnez le mode de conduite:\n"
+            "1: Course 1 tour\n"
+            "2: Course +1 tour\n"
+            "3: Post\n"
+            "4: Back and Forward\n"
+            "5: Turn 8\n"
+            "6: Quit\n"
+            "Votre choix: "
+        )
+        if mode == "1":
+            print("Mode course 1 tour sélectionné")
+            return "racing"
+        elif mode == "2":
+            print("Mode course +1 tours sélectionné")
+            while True:
+                try:
+                    nombre_tours = int(input("Combien de tours ? "))
+                    if nombre_tours > 0:
+                        print(f"Mode course {nombre_tours} tours sélectionné")
+                        self._target_lap = nombre_tours
+                        return "racing"
+                    else:
+                        print("Veuillez entrer un nombre entier positif.")
+                except ValueError:
+                    print("Entrée invalide. Veuillez entrer un nombre entier.")
+        elif mode == "3":
+            print("Mode post sélectionné")
+            return "post"
+        elif mode == "4":
+            print("Mode back and forward sélectionné")
+            return "back_and_forward"
+        elif mode == "5":
+            print("Mode turn 8 sélectionné")
+            return "turn_8"
+        elif mode == "6":
+            print("Mode quit sélectionné")
+            return "quit"
+        else:
+            print("Mode non valide.")
+            return "stand_by"
+        
+    """ Getters"""
+    @property
+    def motor_manager(self):
+        return self._motor_manager
+    
+    @property
+    def sensor_manager(self):
+        return self._sensor_manager
+    
+    @property
+    def current_state(self):
+        return self._current_state
+    
+    @property
+    def total_laps(self):
+        return self._total_laps
+    
+    @property
+    def target_lap(self):
+        return self._target_lap
+    
+    @total_laps.setter
+    def total_laps(self,nv_lap):
+        self._total_laps = nv_lap
     

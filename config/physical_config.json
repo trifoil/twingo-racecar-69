@@ -1,0 +1,44 @@
+{
+    "HCRS04": {
+        "LEFT": {
+            "TRIG_PIN": 11,
+            "ECHO_PIN": 9,
+            "NAME": "Left"
+        },
+        "RIGHT": {
+            "TRIG_PIN": 26,
+            "ECHO_PIN": 19,
+            "NAME": "Right"
+        },
+        "FRONT": {
+            "TRIG_PIN": 16,
+            "ECHO_PIN": 25,
+            "NAME": "Front"
+        }
+    },
+    "IR_SENSOR":{
+        "GPIO_PIN": 20
+    },
+    "DC_MOTORS": {
+        "LEFT_MOTOR": {
+            "ENABLE_BOARD_CHANNEL": 4,
+            "INPUT_PIN_1": 17,
+            "INPUT_PIN_2": 18
+        },
+        "RIGHT_MOTOR": {
+            "ENABLE_BOARD_CHANNEL": 5,
+            "INPUT_PIN_1": 27,
+            "INPUT_PIN_2": 22
+        }
+    },
+    "SERVO": {
+        "BOARD_CHANNEL" : 0,
+        "RANGE_DEGREES_FROM_CENTER" : 30
+    },
+    "RGB_TCS3472": {
+        "I2C_ADDRESS": "0x29"
+    },
+    "INA219": {
+        "I2C_ADDRESS": "0x40"
+    }
+}

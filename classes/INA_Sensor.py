@@ -9,17 +9,17 @@ monbus = busio.I2C(board.SCL,board.SDA)
 
 class INA_Sensor(Sensor):
     def __init__(self, i2c:tuple):
-        if not type(i2c[0]) == int: 
+        if not type(i2c[1]) == int: 
             raise ValueError("mesg")
         self._i2c_bus ,self._address = i2c
-        self._sensor = adafruit_ina219.INA219(self._i2c_bus, self._address)
+        self._sensor = adafruit_ina219.INA219(self._i2c_bus,self._address)
 
     def read_value(self) -> dict:
         """
         Return un dictionaire avec comme clef le nom à récupérer, courant, power, ... et en valeur, la valeur lue par le capteur
         """
         return {
-            "BusVolatage" : self._sensor.bus_voltage,
+            "BusVoltage" : self._sensor.bus_voltage,
             "ShuntVoltage" : self._sensor.shunt_voltage,
             "Current" : self._sensor.current
         }

@@ -70,7 +70,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{\thepage}
-\lhead{Projet Voiture - Groupe X}
+\lhead{Projet Voiture - Groupe 5}
 \renewcommand{\headrulewidth}{0.4pt}
 
 % Page de garde
@@ -139,7 +139,7 @@
 	Le choix du Raspberry Pi 3 Modèle B comme plateforme centrale pour ce projet s'est imposé face aux microcontrôleurs traditionnels comme Arduino pour plusieurs raisons fondamentales :
 	
 	\begin{itemize}
-		\item \textbf{Puissance de calcul} : Contrairement aux microcontrôleurs classiques, le Raspberry Pi intègre un processeur quad-core à 1.2GHz et 1GB de RAM, permettant d'exécuter un système d'exploitation complet (Raspbian) et de gérer simultanément :
+		\item \textbf{Puissance de calcul} : Contrairement aux microcontrôleurs classiques, le Raspberry Pi intègre un processeur quad-core à 1.2GHz et 1GB de RAM, permettant d'exécuter un système d'exploitation complet et de gérer simultanément :
 		\begin{itemize}
 			\item Le traitement des données des capteurs en temps réel
 			\item Les algorithmes de navigation (relativement) complexes
@@ -153,7 +153,7 @@
 			\item Interface HDMI pour le débogage
 		\end{itemize}
 		
-		\item \textbf{Multitâching} : La capacité à exécuter plusieurs processus en parallèle est cruciale pour :
+		\item \textbf{Multitasking} : La capacité à exécuter plusieurs processus en parallèle est cruciale pour :
 		\begin{itemize}
 			\item Gérer simultanément les capteurs et les moteurs
 			\item Maintenir une connexion SSH active
@@ -170,7 +170,7 @@
 	
 	\subsection{Limitations des Microcontrôleurs Traditionnels}
 	
-	Les solutions comme Arduino ou STM32, bien que performantes pour certaines applications, présentent des limitations majeures pour ce projet :
+	Les solutions comme Arduino ou ESP32, bien que performantes pour certaines applications, présentent des limitations majeures pour ce projet :
 	
 	\begin{itemize}
 		\item \textbf{Capacité de traitement insuffisante} pour les algorithmes avancés de détection d'obstacles et d'optimisation de trajectoire
@@ -182,11 +182,10 @@
 			\item Les communications réseau
 		\end{itemize}
 		
-		\item \textbf{Connectivité limitée} nécessitant des shields additionnels pour :
+		\item \textbf{Connectivité limitée} nécessitant des modules additionnels pour certaines fonctionnalités :
 		\begin{itemize}
-			\item Le Wi-Fi/Bluetooth
 			\item Le stockage de données
-			\item Les interfaces utilisateur
+			\item Les interfaces utilisateur avancées
 		\end{itemize}
 		
 		\item \textbf{Espace mémoire restreint} incompatible avec :
@@ -204,41 +203,109 @@
 		\caption{Comparatif des plateformes matérielles}
 		\begin{tabular}{|l|c|c|c|}
 			\hline
-			\textbf{Caractéristique} & \textbf{Raspberry Pi 3} & \textbf{Arduino Mega} & \textbf{STM32F4} \\
+			\textbf{Caractéristique} & \textbf{Raspberry Pi 3} & \textbf{Arduino Mega} & \textbf{ESP32} \\
 			\hline
-			Processeur & Quad-core 1.2GHz & 16MHz & 180MHz \\
+			Processeur & Quad-core 1.2GHz & 16MHz & Dual-core 240MHz \\
 			\hline
-			Mémoire & 1GB RAM & 8KB RAM & 192KB RAM \\
+			Mémoire & 1GB RAM & 8KB RAM & 520KB RAM \\
 			\hline
-			Système d'exploitation & Linux & Aucun & RTOS optionnel \\
+			Système d'exploitation & Linux & Aucun & FreeRTOS \\
 			\hline
-			Connectivité & Wi-Fi/BT intégrés & Requiert shields & Requiert modules \\
+			Connectivité & Wi-Fi/BT intégrés & Requiert shields & Wi-Fi/BT intégrés \\
 			\hline
-			Langages supportés & Python, C++, etc. & C/C++ & C/C++ \\
+			Langages supportés & Python, C++, ... & C/C++ & C/C++, MicroPython \\
 			\hline
-			Prix & \textasciitilde35€ & \textasciitilde40€ & \textasciitilde25€ \\
+			Prix & \textasciitilde50€ & \textasciitilde40€ & \textasciitilde5-10€ \\
 			\hline
 		\end{tabular}
 	\end{table}
 	
-	Ce tableau montre clairement l'avantage du Raspberry Pi en termes de rapport performance/prix pour les besoins spécifiques de ce projet.
+	Ce tableau montre clairement l'avantage du Raspberry Pi en termes de rapport performance/prix pour les besoins spécifiques de ce projet. Il est toutefois à noter que l'ESP32 présente un excellent compromis pour des applications plus légères avec sa connectivité sans fil intégrée.
+	
+	\subsection{Proposition d'alternative et son rejet}
+	
+	Bien que, comme mentionné précédemment, l’ESP32 présente certains avantages pour des applications légères, plusieurs facteurs critiques justifient le maintien des Raspberry Pi 3B dans ce projet pédagogique :
+	
+	\begin{itemize}
+		\item \textbf{Compatibilité avec le parc existant} :
+		\begin{itemize}
+			\item L'école dispose déjà d'une flotte de Raspberry Pi 3B fonctionnels
+			\item Tous les accessoires périphériques (écrans, câbles, alimentations) sont prévus pour le format Pi
+			\item Les supports pédagogiques actuels sont spécifiquement conçus pour Raspberry Pi, sans compter la communauté et la documentation abondante disponible en ligne.
+		\end{itemize}
+		
+		\item \textbf{Avantages pédagogiques} :
+		\begin{itemize}
+			\item Initiation à Linux, système d'exploitation professionnel
+			\item Environnement de développement complet (IDE, debuggeur)
+			\item Meilleure visualisation des concepts avec interface graphique
+			\item Compatibilité avec les outils standards (Git, SSH, VNC)
+		\end{itemize}
+		
+		\item \textbf{Limitations techniques de l'ESP32} :
+		\begin{itemize}
+			\item Impossible d'exécuter simultanément :
+			\begin{itemize}
+				\item L'interface utilisateur
+				\item Le serveur web de contrôle
+				\item Le logging avancé des données
+			\end{itemize}
+			\item Mémoire insuffisante pour le débogage interactif
+			\item Connectivité HDMI absente nécessitant des adaptateurs supplémentaires
+		\end{itemize}
+		
+		\item \textbf{Économie à court terme, coût à long terme} :
+		\begin{itemize}
+			\item Coût de migration des développements existants
+			\item Nécessité de reformer les enseignants et étudiants
+			\item Achat de nouveaux accessoires (programmateurs, shields)
+			\item Perte de compatibilité avec les projets antérieurs
+		\end{itemize}
+		
+		\newpage
+		
+		\item \textbf{Benchmarks comparatifs} : Les tests pratiques démontrent des limitations majeures de l'ESP32 pour notre cas d'usage :
+		
+		
+		
+		\begin{table}[h]
+			\centering
+			\caption{Comparaison des performances réelles}
+			\begin{tabular}{|l|c|c|}
+				\hline
+				\textbf{Tâche} & \textbf{RPi 3B} & \textbf{ESP32} \\
+				\hline
+				Traitement d'image (640x480) & 15 fps & Impossible \\
+				\hline
+				Serveur web + interface & Fluide & Non réalisable \\
+				\hline
+				Stockage des logs (1h) & Direct & Nécessite SD card \\
+				\hline
+				Débogage temps réel & Possible & Très limité \\
+				\hline
+			\end{tabular}
+		\end{table}
+	\end{itemize}
+	
+	\textbf{Conclusion} : Bien que techniquement envisageable pour des applications minimalistes, le remplacement des Raspberry Pi par des ESP32 compromettrait la qualité pédagogique et l'expérience d'apprentissage, sans réelle économie à l'échelle du parc existant. Et c'est sans compter l'affichage d'images de la webcam dans le cas où cette fonctionnalité serait implémentée dans les temps.
+	
 	
 	\section{Choix Technologiques Logiciels}
 	
 	\subsection{Système d'Exploitation}
 	
-	Le choix s'est porté sur \textbf{Raspbian} (version GUI) pour plusieurs raisons techniques :
+	Le choix s'est porté sur \textbf{Raspberry Pi OS} (version GUI, 32bits) pour plusieurs raisons techniques :
 	
 	\begin{itemize}
 		\item \textbf{Compatibilité matérielle} : Support natif de tous les composants du projet
-		\item \textbf{Stabilité} : Distribution officielle maintenue par la fondation Raspberry Pi
+		\item \textbf{Stabilité} : Distribution officielle maintenue par la fondation Raspberry Pi (mieux qu'une distribution obscure IOT pour laquelle certains drivers manqueraient).
 		\item \textbf{Outils intégrés} : Inclut par défaut :
 		\begin{itemize}
 			\item Gestionnaire de paquets apt
-			\item Interfaces de configuration matérielle
-			\item Environnement de développement complet
+			\item Supports Hotspot et WiFi 
 		\end{itemize}
 	\end{itemize}
+	
 	
 	\subsection{Langage de Programmation}
 	
@@ -246,26 +313,55 @@
 	
 	\begin{itemize}
 		\item \textbf{Productivité} : Syntaxe claire permettant un développement rapide
+		\item \textbf{Polyvalence des paradigmes} :
+		\begin{itemize}
+			\item Prise en charge quasi-complète de la programmation orientée objet (classes, héritage, polymorphisme)
+			\item Possibilité de programmer de manière procédurale pour les scripts simples
+			\item Éléments de programmation fonctionnelle (fonctions lambda, map, filter)
+			\item Flexibilité permettant d'adapter le style de programmation à chaque composant du système
+		\end{itemize}
+		
 		\item \textbf{Bibliothèques spécialisées} :
 		\begin{itemize}
-			\item RPi.GPIO pour le contrôle des GPIO
-			\item NumPy pour les calculs matriciels
-			\item Matplotlib pour la visualisation des données
+			\item board (récupération des lignes sda/scl par défaut)
+			\item busio (pour l'utilisation des bus I2C)
+			\item adafruit\_ina219
+			\item adafruit\_pca9685
+			\item adafruit\_tcs34725
+			\item rpi.gpio
+			\item unittest
 		\end{itemize}
 		
 		\item \textbf{Communauté active} : Large base d'utilisateurs et documentation abondante
-		\item \textbf{Portabilité} : Fonctionne sur tous les systèmes d'exploitation
+		\item \textbf{Portabilité} : Fonctionne sur tous les systèmes d'exploitation (ou presque)
 	\end{itemize}
+	
+	
 	
 	\subsection{Outils de Développement}
 	
 	L'environnement logiciel comprend :
 	
 	\begin{itemize}
-		\item \textbf{Git} : Pour le versioning et la collaboration en équipe
+		\item \textbf{Git - Github} : Pour le versioning et la collaboration en équipe
 		\item \textbf{SSH/TightVNC} : Permet le développement à distance
 		\item \textbf{UnitTest} : Framework de tests unitaires intégré à Python
-	\end{itemize}
+			\end{itemize}
+	L'environnement non-logiciel comprend :
+		\begin{itemize}
+		\item \textbf{Notion} : 
+				\begin{itemize}
+					\item pour la gestion des taches en temps réel pour le scrumboard
+					\item visualisation du planning
+					\item centraliser la documentation
+					\item gérer les daily scrums
+					\item reviews
+					\item retrospectives
+					\item journal de bord accessible par toute l'équipe
+					\item  gestion des user-stories
+				 
+				\end{itemize} 
+			\end{itemize}
 	
 	\subsection{Architecture Logicielle}
 	
@@ -273,10 +369,80 @@
 	
 	\begin{itemize}
 		\item \textbf{Couche matérielle} : Drivers pour les capteurs et actionneurs
-		\item \textbf{Couche contrôle} : Algorithmes de navigation et détection
-		\item \textbf{Couche communication} : Gestion des connexions réseau
-		\item \textbf{Interface utilisateur} : Console et interface web
+		\item \textbf{Couche contrôle} : Algorithmes de navigation et détection, tests unitaires
+		\item \textbf{Couche communication} : Gestion des connexions réseau, SSH, I2C
+		\item \textbf{Interface utilisateur} : TUI à travers le SSH
+	\end{itemize}
+	Cette architecture permet une maintenance aisée et une bonne séparation des préoccupations.
+	
+	\subsection{Approche de Test et Validation}
+	
+	Une méthodologie rigoureuse de test a été mise en place pour garantir la fiabilité du système tout en protégeant le matériel :
+	
+	\begin{itemize}
+		\item \textbf{Philosophie de test} :
+		\begin{itemize}
+			\item \textbf{Tests avant implémentation} : Développement piloté par les tests (TDD) pour les composants critiques
+			\item \textbf{Protection du matériel} : Validation logicielle complète avant tout déploiement sur le Raspberry Pi, utilisation de capteur de protection et de préactionneurs (pont en H)
+			\item \textbf{Isolation des défauts} : Tests unitaires pour identifier précisément l'origine des problèmes
+		\end{itemize}
+		
+		\item \textbf{Infrastructure de test} :
+		\begin{itemize}
+			\item Framework \texttt{unittest} de Python comme base
+			\item Création de \textbf{mock objects} pour :
+			\begin{itemize}
+				\item Simuler les capteurs (GPIO, I2C) sans risque de court-circuit
+				\item Émuler des conditions extrêmes (tension trop élevée, température critique)
+				\item Tester les cas d'erreur sans endommager le matériel
+			\end{itemize}
+			\item Bancs de test virtuels pour valider les algorithmes de contrôle
+		\end{itemize}
+		
+		\item \textbf{Exemple concret de mock} :
+		\begin{lstlisting}[language=Python]
+import unittest
+from unittest.mock import MagicMock, patch
+from vehicle import VehicleController
+
+class MockMotor():
+	def __init__(self, name):
+		self.status = f"Motor {name} initialized"
+
+	def activate(self):
+		print("Motor activation signal sent")
+		return "Motor activated"
+
+class TestVehicleSystem(unittest.TestCase):
+
+	@patch("vehicle.Motor", new=MockMotor)
+	def test_vehicle_control(self):
+		controller = VehicleController("main_motor", 100)
+		result = controller.activate_motor()
+		self.assertEqual(result, "Motor activated")
+		print("Test passed: Motor control OK")
+
+if __name__ == "__main__":
+	unittest.main()
+		\end{lstlisting}
+		
+		\item \textbf{Avantages de cette approche} :
+		\begin{itemize}
+			\item \textbf{Sécurité matérielle} : Aucun risque de griller des composants pendant le développement
+			\item \textbf{Reproductibilité} : Conditions de test parfaitement contrôlées
+			\item \textbf{Efficacité} : Tests exécutables sans le matériel physique
+			\item \textbf{Couverture} : Possibilité de simuler des cas rares ou dangereux
+		\end{itemize}
+		
+		\item \textbf{Validation progressive} :
+		\begin{enumerate}
+			\item Tests unitaires avec mocks (100\% de couverture)
+			\item Tests d'intégration en environnement simulé
+			\item Tests système sur banc de validation
+			\item Déploiement sur le prototype physique
+		\end{enumerate}
 	\end{itemize}
 	
-	Cette architecture permet une maintenance aisée et une bonne séparation des préoccupations.
+	Cette méthodologie nous permet de développer en toute sécurité des fonctionnalités complexes comme le contrôle PID des moteurs ou la gestion des capteurs I2C, tout en minimisant les risques pour le matériel coûteux. Les mocks reproduisent fidèlement le comportement des composants physiques, y compris leurs temps de réponse et modes de défaillance.
+	
 \end{document}

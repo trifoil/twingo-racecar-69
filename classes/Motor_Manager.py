@@ -1,4 +1,4 @@
-from classes.DC_motor import DC_Motor
+from classes.DC_Motor import DC_Motor
 from classes.Servo_Motor import Servo_Motor
 from adafruit_pca9685 import PCA9685
 import busio
@@ -68,14 +68,14 @@ class Motor_Manager():
         :param max_val: la valeur maximale (par défaut 100)
         """
         assert isinstance(value, int) 
-        assert isinstance(min, int)
-        assert isinstance(max, int)
-        assert min <= max
+        assert isinstance(min_val, int)
+        assert isinstance(max_val, int)
+        assert min_val <= max_val
         
-        if (value < min):
-            return min
-        elif (value > max):
-            return max
+        if (value < min_val):
+            return min_val
+        elif (value > max_val):
+            return max_val
         else:
             return value
 

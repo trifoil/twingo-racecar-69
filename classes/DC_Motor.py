@@ -22,7 +22,7 @@ class DC_Motor():
     def __init__(self, pin_enable: int, pin_input1: int, pin_input2: int):
         assert (pin_enable not in [pin_input1, pin_input2]) and (pin_input1 != pin_input2)
         for pin in [pin_enable, pin_input1, pin_input2]:
-            assert pin in range(16)
+            assert pin in range(32)
         self._pin_enable = pin_enable
         self._pin_input1 = pin_input1
         self._pin_input2 = pin_input2

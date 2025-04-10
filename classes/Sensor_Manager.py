@@ -33,10 +33,10 @@ class Sensor_Manager:
         Renvoie True uniquement lors de la première détection lorsque la voiture entre sur la ligne.
         """
         try:
-            if not self._is_on_line and self._line_sensor.readValue():
+            if not self._is_on_line and self._line_sensor.read_value():
                 self._is_on_line = True
                 return True
-            elif self._is_on_line and not self._line_sensor.readValue():
+            elif self._is_on_line and not self._line_sensor.read_value():
                 self._is_on_line = False
         except Exception as e:
             print("Erreur lors de la détection de la ligne:", e)
@@ -54,7 +54,7 @@ class Sensor_Manager:
             readings = []
             for _ in range(5):
                 try:
-                    value = sensor.readValue()
+                    value = sensor.read_value()
                     if value is not None:
                         readings.append(value)
                 except Exception as e:
@@ -84,7 +84,7 @@ class Sensor_Manager:
         En cas d'erreur, renvoie None.
         """
         try:
-            sensor_data = self._ina_sensor.readValue()
+            sensor_data = self._ina_sensor.read_value()
             return sensor_data['Current']
         except Exception as e:
             print("Erreur lors de la lecture du courant: ", e)
@@ -98,7 +98,7 @@ class Sensor_Manager:
           - et si la différence (R - G) est supérieure ou égale à g_r_delta_minimum.
         """
         try:
-            r, g, b = self._rgb_sensor.readValue()
+            r, g, b = self._rgb_sensor.read_value()
             if r < red_minimum:
                 return False
             if (r - g) < g_r_delta_minimum:
@@ -116,7 +116,7 @@ class Sensor_Manager:
           - et si la différence (G - R) est supérieure ou égale à g_r_delta_minimum.
         """
         try:
-            r, g, b = self._rgb_sensor.readValue()
+            r, g, b = self._rgb_sensor.read_value()
             if g < green_minimum:
                 return False
             if (g - r) < g_r_delta_minimum:
