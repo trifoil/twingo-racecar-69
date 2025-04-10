@@ -29,23 +29,24 @@ Initialisation de la voiture : {self._car_name}
         obstacle = False
         front, left, right = distances
 
-        if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
-            obstacle = True
-            while obstacle:
-                if left > right:
-                    self._motor_manager.set_angle(-100)
-                    self._motor_manager.set_speed(100)
+        try:
+            if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
+                obstacle = True
+                while obstacle:
+                    if left > right:
+                        self._motor_manager.set_angle(-100)
+                        self._motor_manager.set_speed(100)
 
 
-                elif right > left:
-                    self._motor_manager.set_angle(100)
-                    self._motot_manager.set_speed(100)
+                    elif right > left:
+                        self._motor_manager.set_angle(100)
+                        self._motot_manager.set_speed(100)
 
+                    if front > valeur_obstacle:
+                        return obstacle
 
-                if front > valeur_obstacle:
-                    return obstacle
-
-
+        except Exception as e:
+            print(f"Un erreur est survenue : {e}")
 
 def count_lap(self,detectedLine:bool) -> None:
         """
