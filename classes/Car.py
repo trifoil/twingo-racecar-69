@@ -88,26 +88,26 @@ def count_lap(self,detectedLine:bool) -> None:
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
-        if right_disc < 0:
-            raise ValueError("right_disc cannot be negative")
-        if right_disc > 100:
-            right_disc = 100
-        
-        if right_disc < 10 :
-            new_direction = (10 - right_disc * 10)*-1
-            new_speed = 10 - right_disc * 10
-        elif right_disc > 10 :
-            new_direction = right_disc /2
-            new_speed = 100
-        else:
-            new_direction = 0
-            new_speed = 100
-        return (new_direction, new_speed)
-            
-
-        
-
-        return (new_direction, new_speed)
+        try:
+            if right_disc < 0:
+                raise ValueError("right_disc cannot be negative")
+            if right_disc > 100:
+                right_disc = 100
+            if right_disc < 10 :
+                new_direction = -30
+                new_speed = 50
+            elif right_disc > 40:
+                new_direction = 70
+                new_speed = 50
+            elif right_disc > 10 :
+                new_direction = 30
+                new_speed = 50
+            else:
+                new_direction = 0
+                new_speed = 50
+            return (new_direction, new_speed)
+        except:
+            pass
 
     def u_turn(self, direction: str) -> None:
         """
