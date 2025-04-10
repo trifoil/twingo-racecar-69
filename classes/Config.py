@@ -133,15 +133,17 @@ class Config:
     def __str__(self):
         return self.get_formatted_config()
     
-    def save_to_json(self, filename):
-        """Save configuration to JSON file"""
-        with open(filename, 'w') as f:
+    def save_to_json(self, filename="config.json"):
+        """Save configuration to JSON file in the config directory"""
+        filepath = f"config/{filename}"
+        with open(filepath, 'w') as f:
             json.dump(self.get_config_dict(), f, indent=4)
-    
+
     @classmethod
-    def load_from_json(cls, filename):
-        """Load configuration from JSON file and return a Config instance"""
-        with open(filename, 'r') as f:
+    def load_from_json(cls, filename="config.json"):
+        """Load configuration from JSON file in the config directory and return a Config instance"""
+        filepath = f"config/{filename}"
+        with open(filepath, 'r') as f:
             data = json.load(f)
         
         config = cls()
