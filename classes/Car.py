@@ -46,7 +46,7 @@ Initialisation de la voiture : {self._car_name}
                     except TypeError :
                         self._motor_manager.set_angle(-100)
 
-                    if front > valeur_obstacle:
+                    if front > self._const_config["OBSTACLE_MINIMUM_DIST"]:
                         return obstacle
 
         except Exception as e:
@@ -93,29 +93,26 @@ Initialisation de la voiture : {self._car_name}
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
-
-        #obstacle = self.detect_obstacle(distances)
         time.sleep(0.01)
         try :
-            #if obstacle:
-            if True:
-                if right_disc < 0:
-                  raise ValueError("right_disc cannot be negative")
-                if right_disc > 100:
-                    right_disc = 100
-                if right_disc < 10 :
-                    new_direction = -30
-                    new_speed = 50
-                elif right_disc > 40:
-                    new_direction = 70
-                    new_speed = 50
-                elif right_disc > 10 :
-                    new_direction = 30
-                    new_speed = 50
-                else:
-                    new_direction = 0
-                    new_speed = 50
-                return (new_direction, new_speed)
+            #self.detect_obstacle(distances)
+            if right_disc < 0:
+                raise ValueError("right_disc cannot be negative")
+            if right_disc > 100:
+                right_disc = 100
+            if right_disc < 10 :
+                new_direction = -30
+                new_speed = 50
+            elif right_disc > 40:
+                new_direction = 70
+                new_speed = 50
+            elif right_disc > 10 :
+                new_direction = 30
+                new_speed = 50
+            else:
+                new_direction = 0
+                new_speed = 50
+            return (new_direction, new_speed)
         except :
             pass
    
