@@ -51,7 +51,6 @@ class Distance_Sensor(Sensor):
                 return distance
 
             except Exception as e:
-                print(f"[{self._side}] Erreur : {e}")
                 return None
 
     @property
