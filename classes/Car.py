@@ -17,6 +17,8 @@ Initialisation de la voiture : {self._car_name}
         self._current_state = "stand_by"
         self._const_config = const_config
         self._target_lap = 0
+        self._last_move = None
+        self._last_error = None
         print(f"""
 {self._car_name} opérationel !
               """)
@@ -78,68 +80,51 @@ Initialisation de la voiture : {self._car_name}
               """)
 
     def calculate_next_move(self, distances: tuple) -> tuple:
-        """
-        Calcule la décision en temps réel à partir des mesures des capteurs.
-        
-        Paramètres :
-          - distances : un tuple (front, left, right) en cm
- 
-        Renvoie :
-          - (new_direction, new_speed) : le pourcentage de braquage (-100 à 100) et la vitesse en pourcentage (0 à 100)
-          
-        La logique :
-          1. Si la distance frontale est inférieure au seuil, arrêt d'urgence.
-          2. Calcul du braquage : 
-             - On définit une erreur = (distance_droite - distance_gauche).
-             - On applique un gain proportionnel pour obtenir un pourcentage de braquage.
-          3. Calcul de la vitesse :
-             - On fait une interpolation linéaire entre la distance minimale et une distance frontale max.
-             - On réduit la vitesse si le braquage est important (pour plus de stabilité).
-          4. Si la ligne est détectée, on incrémente le compteur de tours.
-          5. On met à jour la direction et la vitesse via le motorManager.
-        """
         front_disc, left_disc, right_disc = distances
-        # self.detect_obstacle(distances)
-        # try :
+        target_right = 10.0
+        kp = 1.0
+        kd = 0.5
+        if self._last_move == None:
+            self._last_move = time.time()
+            diff_time = 0.0
+        elif self._last_move != None:
+            diff_time = self._last_move - time.time()
+            self._last_move = time.time()
+        if diff_time > 0:
+            if self._last_error == None:
+                self._last_error = 0.0
+            elif self._last_error != None:
+                diff_error = right_disc - target_right
+                derivative = diff_error - self._last_error / diff_time
+                self._last_error = diff_error
+        else:
+            derivative = 0.0
+        new_direction = kp * (right_disc - target_right) + kd * derivative
+        new_speed = 50
+        if new_direction > 100:
+            new_direction = 100
+        if new_direction < -100:
+            new_direction = -100
+        return (new_direction, new_speed)
+    
+        # try:
+        #     minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
+        #     maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
+        #     target = maximum_right - minimum_right
         #     if right_disc < 0:
-        #         raise ValueError("right_disc cannot be negative")
+        #         right_disc = 0
         #     if right_disc > 100:
         #         right_disc = 100
-        #     if right_disc < 10 :
-        #         new_direction = -30
-        #         new_speed = 50
-        #     elif right_disc > 30:
-        #         new_direction = 35
-        #         new_speed = 50
-        #     elif right_disc > 10 :
-        #         new_direction = 25
-        #         new_speed = 50
-        #     elif front_disc == None or right_disc == None or left_disc == None :
-        #         return (0,50)
-        #     else:
-        #         new_direction = 0
-        #         new_speed = 30
-        #     return (new_direction, new_speed)
-        # except :
-        #     return (0,30)
-        try:
-            minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
-            maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
-            target = maximum_right - minimum_right
-            if right_disc < 0:
-                right_disc = 0
-            if right_disc > 100:
-                right_disc = 100
 
-            new_direction = 10 * right_disc + 100
+        #     new_direction = 10 * right_disc + 100
             
-            if new_direction > 100:
-                new_direction = 100
-            if new_direction < 0:
-                new_direction = 0
-            return (new_direction, 50)
-        except:
-            return (50, 50)
+        #     if new_direction > 100:
+        #         new_direction = 100
+        #     if new_direction < 0:
+        #         new_direction = 0
+        #     return (new_direction, 50)
+        # except:
+        #     return (50, 50)
    
 
     def u_turn(self, direction: str) -> None:
