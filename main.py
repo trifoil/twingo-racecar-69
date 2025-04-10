@@ -52,7 +52,9 @@ def main():
     sensor_manager = Sensor_Manager(sensors)
     config = {
         "OBSTACLE_MINIMUM_DIST" : 10.0,
-        "MAX_FRONT_DIST" : 10.0
+        "MAX_FRONT_DIST" : 10.0,
+        "MINIMUM_RIGHT_DIST": 5.0,
+        "MAXIMUM_RIGHT_DIST": 15.0,
     }
     TWINGO = Car("TWINGO", motor_manager, sensor_manager,config)
 

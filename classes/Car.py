@@ -99,30 +99,47 @@ Initialisation de la voiture : {self._car_name}
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
-        self.detect_obstacle(distances)
-        try :
-            #self.detect_obstacle(distances)
+        # self.detect_obstacle(distances)
+        # try :
+        #     if right_disc < 0:
+        #         raise ValueError("right_disc cannot be negative")
+        #     if right_disc > 100:
+        #         right_disc = 100
+        #     if right_disc < 10 :
+        #         new_direction = -30
+        #         new_speed = 50
+        #     elif right_disc > 30:
+        #         new_direction = 35
+        #         new_speed = 50
+        #     elif right_disc > 10 :
+        #         new_direction = 25
+        #         new_speed = 50
+        #     elif front_disc == None or right_disc == None or left_disc == None :
+        #         return (0,50)
+        #     else:
+        #         new_direction = 0
+        #         new_speed = 30
+        #     return (new_direction, new_speed)
+        # except :
+        #     return (0,30)
+        try:
+            minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
+            maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
+            target = maximum_right - minimum_right
             if right_disc < 0:
-                raise ValueError("right_disc cannot be negative")
+                right_disc = 0
             if right_disc > 100:
                 right_disc = 100
-            if right_disc < 10 :
-                new_direction = -30
-                new_speed = 50
-            elif right_disc > 30:
-                new_direction = 35
-                new_speed = 50
-            elif right_disc > 10 :
-                new_direction = 25
-                new_speed = 50
-            elif front_disc == None or right_disc == None or left_disc == None :
-                return (0,50)
-            else:
+
+            new_direction = 10 * right_disc + 100
+            
+            if new_direction > 100:
+                new_direction = 100
+            if new_direction < 0:
                 new_direction = 0
-                new_speed = 30
-            return (new_direction, new_speed)
-        except :
-            return (0,30)
+            return (new_direction, 50)
+        except:
+            return (50, 50)
    
 
     def u_turn(self, direction: str) -> None:
