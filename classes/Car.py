@@ -106,12 +106,12 @@ Initialisation de la voiture : {self._car_name}
             turn_value = 100
         else:
             raise ValueError("La direction doit être 'left' ou 'right'")
-        self._motor_manager.setAngle(turn_value)
-        self._motor_manager.setSpeed(speed) 
-        time.sleep(4)
+        self._motor_manager.set_angle(turn_value)
+        self._motor_manager.set_speed(speed) 
+        time.sleep(2.4)
 
-        self._motor_manager.setSpeed(0)
-        self._motor_manager.setAngle(0)
+        self._motor_manager.set_speed(0)
+        self._motor_manager.set_angle(0)
 
     def monitoring(self, distances: tuple, isLine: bool, direction: str, speed: float, ina: dict, rgb: tuple):
         """

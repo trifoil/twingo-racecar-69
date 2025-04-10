@@ -46,4 +46,12 @@ config = {
     "MAX_FRONT_DIST" : 10.0
 }
 TWINGO = Car("TWINGO", motor_manager, sensor_manager,config)
-TWINGO.post()
+
+print("Uturn :")
+TWINGO.u_turn('left')
+TWINGO.u_turn('left')
+
+sleep(2)
+print("Uturn :")
+TWINGO.u_turn('right')
+TWINGO.u_turn('right')
