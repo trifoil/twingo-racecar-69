@@ -74,6 +74,9 @@ from classes.Motor_Manager import Motor_Manager
 from classes.DC_Motor import DC_Motor
 from classes.Servo_Motor import Servo_Motor
 
+# Disable Logging
+from classes.Logging_Utils import Logging_Utils
+Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
 
 class Test_Motor_Manager(unittest.TestCase):
 
