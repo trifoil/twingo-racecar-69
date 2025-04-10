@@ -14,7 +14,7 @@ Initialisation de la voiture : {self._car_name}
         self._motor_manager = motor_manager
         self._total_laps = int(0)
         self._last_lap_duration = int(0)
-        self._current_state = "standBy"
+        self._current_state = "stand_by"
         self._const_config = const_config
         print(f"""
 {self._car_name} opérationel !
@@ -112,40 +112,40 @@ Initialisation de la voiture : {self._car_name}
 
         self._motor_manager.setSpeed(0)
 
-        def monitoring(self, distances: tuple, isLine: bool, direction: str, speed: float, ina: dict, rgb: tuple):
-            """
-            Affiche les données en temps réel pour le suivi de l'état de la voiture.
+    def monitoring(self, distances: tuple, isLine: bool, direction: str, speed: float, ina: dict, rgb: tuple):
+        """
+        Affiche les données en temps réel pour le suivi de l'état de la voiture.
 
-            Paramètres :
-            - distances : un tuple (right, front, left) en cm
-            - isLine    : booléen indiquant si la ligne est détectée
-            - direction : direction actuelle de la voiture ('left' ou 'right')
-            - speed     : vitesse de la voiture en pourcentage
-            - ina       : un dictionnaire contenant les données du capteur INA (bus_voltage, shunt_voltage, current)
-            - rgb       : un tuple contenant les valeurs RGB (0-255, 0-255, 0-255)
-            """
-            right_disc, front_disc, left_disc = distances
+        Paramètres :
+        - distances : un tuple (right, front, left) en cm
+        - isLine    : booléen indiquant si la ligne est détectée
+        - direction : direction actuelle de la voiture ('left' ou 'right')
+        - speed     : vitesse de la voiture en pourcentage
+        - ina       : un dictionnaire contenant les données du capteur INA (bus_voltage, shunt_voltage, current)
+        - rgb       : un tuple contenant les valeurs RGB (0-255, 0-255, 0-255)
+        """
+        right_disc, front_disc, left_disc = distances
 
-            # Affichage des données
-            print(f"""
-            ======= État actuel de la voiture : {self._car_name} =======
-            Distance droite: {right_disc} cm
-            Distance frontale: {front_disc} cm
-            Distance gauche: {left_disc} cm
-            Ligne détectée: {'Oui' if isLine else 'Non'}
-            Direction: {direction}
-            Vitesse: {speed} %
+        # Affichage des données
+        print(f"""
+        ======= État actuel de la voiture : {self._car_name} =======
+        Distance droite: {right_disc} cm
+        Distance frontale: {front_disc} cm
+        Distance gauche: {left_disc} cm
+        Ligne détectée: {'Oui' if isLine else 'Non'}
+        Direction: {direction}
+        Vitesse: {speed} %
 
-            === Données du capteur INA ===
-            Bus Voltage: {ina['BusVoltage']} V
-            Shunt Voltage: {ina['Shunt Voltage']} V
-            Current: {ina['Current']} A
+        === Données du capteur INA ===
+        Bus Voltage: {ina['BusVoltage']} V
+        Shunt Voltage: {ina['Shunt Voltage']} V
+        Current: {ina['Current']} A
 
-            === Couleur RGB ===
-            R: {rgb[0]} G: {rgb[1]} B: {rgb[2]}
+        === Couleur RGB ===
+        R: {rgb[0]} G: {rgb[1]} B: {rgb[2]}
 
-            ============================================================
-            """)
+        ============================================================
+        """)
 
 
 
