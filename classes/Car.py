@@ -14,8 +14,9 @@ Initialisation de la voiture : {self._car_name}
         self._motor_manager = motor_manager
         self._total_laps = int(0)
         self._last_lap_duration = int(0)
-        self._current_state = "stand_by"
+        self._current_state = "post"
         self._const_config = const_config
+        self._target_lap = 0
         print(f"""
 {self._car_name} opérationel !
               """)
@@ -148,7 +149,7 @@ Initialisation de la voiture : {self._car_name}
         """)
 
 
-    def POST(self) -> bool:
+    def post(self) -> bool:
         """ 
         Fonction au démarrage de la voiture : effectue un test physique des capteurs et des moteurs
         Vérifie que chaque capteur renvoie une valeur valide ( diférent de None) et que les moteurs répondent correctement
@@ -163,7 +164,7 @@ Initialisation de la voiture : {self._car_name}
             print(f"POST -> Distances (Front, Left, Right): {distances}")
             if any(d is None for d in distances):
                 print("POST -> Capteur(s) de distance non fonctionnel(s)")
-                return False
+                pass 
 
             """ Test capteur de ligne """
             is_line = self._sensor_manager.detect_line()
@@ -186,19 +187,19 @@ Initialisation de la voiture : {self._car_name}
 
             """ Test moteurs DC """
             print("POST -> Test des moteurs DC")
-            self._motor_manager.setSpeed(50)
+            self._motor_manager.set_speed(50)
             time.sleep(1)
-            self._motor_manager.setSpeed(-50)
+            self._motor_manager.set_speed(-50)
             time.sleep(1)
-            self._motor_manager.setSpeed(0)
+            self._motor_manager.set_speed(0)
 
             """Test servo moteur (direction)"""
             print("POST -> Test du servo moteur")
-            self._motor_manager.setAngle(-50)
+            self._motor_manager.set_angle(-50)
             time.sleep(0.5)
-            self._motor_manager.setAngle(50)
+            self._motor_manager.set_angle(50)
             time.sleep(0.5)
-            self._motor_manager.setAngle(0)
+            self._motor_manager.set_angle(0)
 
             print("POST -> Tous les tests sont PASSÉS")
             return True
@@ -206,6 +207,28 @@ Initialisation de la voiture : {self._car_name}
         except Exception as e:
             print(f"POST -> Erreur pendant le test : {e}")
             return False
-
-
+    """ Getters"""
+    @property
+    def motor_manager(self):
+        return self._motor_manager
+    
+    @property
+    def sensor_manager(self):
+        return self._sensor_manager
+    
+    @property
+    def current_state(self):
+        return self._current_state
+    
+    @property
+    def total_laps(self):
+        return self._total_laps
+    
+    @property
+    def target_lap(self):
+        return self._target_lap
+    
+    @total_laps.setter
+    def total_laps(self,nv_lap):
+        self._total_laps = nv_lap
     

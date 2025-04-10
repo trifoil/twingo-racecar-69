@@ -6,7 +6,16 @@ import busio
 import board
 import RPi.GPIO as GPIO
 from time import sleep
-from classes import Motor_Manager, DC_Motor, Servo_Motor, Distance_Sensor, Line_Sensor, INA_Sensor, RGB_Sensor, Sensor_Manager, Car
+from classes.Distance_Sensor import Distance_Sensor
+from classes.Motor_Manager import Motor_Manager
+from classes.DC_Motor import DC_Motor
+from classes.Servo_Motor import Servo_Motor
+from classes.Line_Sensor import Line_Sensor
+from classes.INA_Sensor import INA_Sensor
+from classes.RGB_Sensor import RGB_Sensor
+from classes.Sensor_Manager import Sensor_Manager
+from classes.Car import Car
+
 import threading
 
 def main():
@@ -24,8 +33,8 @@ def main():
     left_distance_test = Distance_Sensor(config["HCRS04"]["LEFT"]["TRIG_PIN"],config["HCRS04"]["LEFT"]["ECHO_PIN"] ,config["HCRS04"]["LEFT"]["NAME"])
     right_distance_test = Distance_Sensor(config["HCRS04"]["RIGHT"]["TRIG_PIN"],config["HCRS04"]["RIGHT"]["ECHO_PIN"] ,config["HCRS04"]["RIGHT"]["NAME"])
     line_sensor_test = Line_Sensor(config["IR_SENSOR"]["GPIO_PIN"])
-    rgb_sensort_test = RGB_Sensor((i2c,config["RGB_SENSOR"]["I2C_ADDRESS"]))
-    ina_sensor_test = INA_Sensor((i2c,config["INA_SENSOR"]["I2C_ADDRESS"]))
+    rgb_sensort_test = RGB_Sensor((i2c,0x29))
+    ina_sensor_test = INA_Sensor((i2c,0x40))
     moteur1 = DC_Motor(config["DC_MOTORS"]["LEFT_MOTOR"]["ENABLE_BOARD_CHANNEL"],config["DC_MOTORS"]["LEFT_MOTOR"]["INPUT_PIN_1"],config["DC_MOTORS"]["LEFT_MOTOR"]["INPUT_PIN_2"])
     moteur2 = DC_Motor(config["DC_MOTORS"]["RIGHT_MOTOR"]["ENABLE_BOARD_CHANNEL"],config["DC_MOTORS"]["RIGHT_MOTOR"]["INPUT_PIN_1"],config["DC_MOTORS"]["RIGHT_MOTOR"]["INPUT_PIN_2"])
     servo_test = Servo_Motor(config["SERVO"]["BOARD_CHANNEL"],config["SERVO"]["RANGE_DEGREES_FROM_CENTER"])
@@ -75,7 +84,7 @@ def main():
                 fr_new_direction = "freinage"
             TWINGO.motor_manager.set_speed(int(new_speed))
             TWINGO.motor_manager.set_angle(int(new_direction))
-            TWINGO.monitoring(distances, line, new_direction, new_speed, ina, rgb)
+            TWINGO.monitoring(distances, line, fr_new_direction, new_speed, ina, rgb)
             if TWINGO.total_laps >= TWINGO.target_lap:
                 print("Course terminée !")
                 TWINGO.stop_car()
@@ -86,7 +95,7 @@ def main():
             print("Power On Self Mode")
             TWINGO.post()
             TWINGO.motor_manager.initialize_motors()
-            TWINGO.current_state = "stand_by"
+            TWINGO.start_car("stand_by")
             print("Power On Self Mode terminé !")
             
         elif TWINGO.current_state == "back_and_forward":
