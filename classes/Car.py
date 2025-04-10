@@ -72,21 +72,30 @@ Initialisation de la voiture : {self._car_name}
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
-        if right_disc < 0:
-            raise ValueError("right_disc cannot be negative")
-        if right_disc > 100:
-            right_disc = 100
-        
-        if right_disc < 10 :
-            new_direction = (10 - right_disc * 10)*-1
-            new_speed = 10 - right_disc * 10
-        elif right_disc > 10 :
-            new_direction = right_disc /2 
-            new_speed = 100
-        else:
-            new_direction = 0
-            new_speed = 100
-        return (new_direction, new_speed)
+        obstacle = self.detect_obstacle(distances)
+        time.sleep(0.01)
+        try :
+            if obstacle:
+                if right_disc < 0:
+                    raise ValueError("right_disc cannot be negative")
+                if right_disc > 100:
+                    right_disc = 100
+                
+                if right_disc < 10 :
+                    new_direction = (10 - right_disc * 10)*-1
+                    new_speed = 10 - right_disc * 10
+                elif right_disc > 40 :
+                    new_direction = 90
+                    new_speed = 100
+                elif right_disc > 10 :
+                    new_direction = right_disc /2 
+                    new_speed = 100
+                else:
+                    new_direction = 0
+                    new_speed = 100
+                return (new_direction, new_speed)
+        except :
+            pass
     
 
     def u_turn(self, direction: str) -> None:
@@ -108,7 +117,7 @@ Initialisation de la voiture : {self._car_name}
             raise ValueError("La direction doit être 'left' ou 'right'")
         self._motor_manager.setAngle(turn_value)
         self._motor_manager.setSpeed(speed) 
-        time.sleep(4)
+        time.sleep(2.5)
 
         self._motor_manager.setSpeed(0)
         self._motor_manager.setAngle(0)
