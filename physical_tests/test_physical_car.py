@@ -19,7 +19,7 @@ from classes.RGB_Sensor import RGB_Sensor
 from classes.Sensor_Manager import Sensor_Manager
 from classes.Car import Car
 """ Instance de tous les capteurs et moteurs"""
-front_distance_test = Distance_Sensor(6,5,'front')
+front_distance_test = Distance_Sensor(16,25,'front')
 left_distance_test = Distance_Sensor(11,9,'left')
 right_distance_test = Distance_Sensor(26,19,'right')
 line_sensor_test = Line_Sensor(20)
@@ -46,3 +46,4 @@ config = {
     "MAX_FRONT_DIST" : 10.0
 }
 TWINGO = Car("TWINGO", motor_manager, sensor_manager,config)
+TWINGO.post()
