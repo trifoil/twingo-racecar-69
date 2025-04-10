@@ -53,7 +53,7 @@ class TestINA_Sensor(unittest.TestCase):
         MockINA219.return_value = mock_sensor
 
         bus = MagicMock()
-        sensor = INA_Sensor((0x40, bus))
+        sensor = INA_Sensor((bus, 0x40))
         result = sensor.read_value()
 
         expected = {
@@ -74,7 +74,7 @@ class TestINA_Sensor(unittest.TestCase):
         MockINA219.return_value = mock_sensor
 
         bus = MagicMock()
-        sensor = INA_Sensor((0x40, bus))
+        sensor = INA_Sensor((bus, 0x40))
         result = sensor.read_value()
 
         expected = {
@@ -95,7 +95,7 @@ class TestINA_Sensor(unittest.TestCase):
         MockINA219.return_value = mock_sensor
 
         bus = MagicMock()
-        sensor = INA_Sensor((0x40, bus))
+        sensor = INA_Sensor((bus, 0x40))
         result = sensor.read_value()
 
         expected = {
