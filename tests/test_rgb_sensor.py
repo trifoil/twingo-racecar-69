@@ -32,6 +32,7 @@ class TestRGBSensor(unittest.TestCase):
         """Simulation du bus I2C et adresse I2C"""
         self.i2c_mock = ("0x29", MagicMock())
         self.sensor = RGB_Sensor(self.i2c_mock)
+        self.sensor._sensor = self.mock_TCS34725()
 
     def test_read_value_normal(self):
         """
