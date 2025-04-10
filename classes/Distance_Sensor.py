@@ -55,7 +55,7 @@ class Distance_Sensor(Sensor):
                     __class__.logger.warning(f"Hors des limites de distance: {distance}cm")
                     raise ValueError(f"Hors limites : {distance} cm")
                 
-                __class__.logger.info(f"Lecture d'une valeur sur le capteur de distance: {distaance}cm")
+                __class__.logger.info(f"Lecture d'une valeur sur le capteur de distance: {distance}cm")
                 return distance
 
             except Exception as e:
