@@ -52,7 +52,7 @@ Initialisation de la voiture : {self._car_name}
         except Exception as e:
             print(f"Un erreur est survenue : {e}")
 
-def count_lap(self,detectedLine:bool) -> None:
+    def count_lap(self,detectedLine:bool) -> None:
         """
         Détection d'une ligne, si ligne detectée alors nombre de tour +1
         """
