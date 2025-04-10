@@ -90,7 +90,7 @@ Initialisation de la voiture : {self._car_name}
 
         return (new_direction, new_speed)
 
-    def u_turn(self, direction: str, duration: float, speed: float) -> None:
+    def u_turn(self) -> None:
         """
         Exécute un U-Turn en braquant à fond (gauche ou droite) pendant une durée donnée,
         à une vitesse spécifiée.
@@ -100,16 +100,14 @@ Initialisation de la voiture : {self._car_name}
           - duration: durée du U-Turn en secondes
           - speed: vitesse en pourcentage (0 à 100) pendant le U-Turn
         """
-        if direction.lower() == 'left':
-            turn_value = -100
-        elif direction.lower() == 'right':
-            turn_value = 100
-        else:
-            raise ValueError("La direction doit être 'left' ou 'right'")
+        turn_value = -100
         self._motor_manager.setAngle(turn_value)
-        self._motor_manager.setSpeed(speed)
-        time.sleep(duration)
-
+        self._motor_manager.setSpeed(80, 80)
+        self._motor_manager.setSpeed(0)
+        time.sleep(0.2)
+        turn_value = 100
+        self._motor_manager.setAngle(turn_value)
+        self._motor_manager.setSpeed(80, 80)
         self._motor_manager.setSpeed(0)
 
         def monitoring(self, distances: tuple, isLine: bool, direction: str, speed: float, ina: dict, rgb: tuple):
