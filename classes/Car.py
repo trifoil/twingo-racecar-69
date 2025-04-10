@@ -67,30 +67,28 @@ Initialisation de la voiture : {self._car_name}
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
-        if front_disc is None or front_disc < self._const_config["OBSTACLE_MINIMUM_DIST"]:
-            self._motor_manager.stopMotors()
-            return (0, 0)
+        if right_disc < 0:
+            raise ValueError("right_disc cannot be negative")
+        if right_disc > 100:
+            right_disc = 100
+        
+        if right_disc < 10 :
+            new_direction = (10 - right_disc * 10)*-1
+            new_speed = 10 - right_disc * 10
+        elif right_disc > 10 :
+            new_direction = right_disc /2
+            new_speed = 100
+        else:
+            new_direction = 0
+            new_speed = 100
+        return (new_direction, new_speed)
+            
 
-        Kp = 10  # facteur de gain (à ajuster par calibration)
-        error = right_disc - left_disc  # Si positif, la voiture est plus proche du mur de gauche et doit tourner à droite.
-        new_direction = max(-100, min(100, Kp * error))
-
-        min_front = self._const_config["OBSTACLE_MINIMUM_DIST"]  
-        max_front = self._const_config["MAX_FRONT_DIST"]
-        new_speed = (front_disc - min_front) / (max_front - min_front) * 100
-        new_speed = max(0, min(100, new_speed))
-        reduction_factor = 1 - (abs(new_direction) / 100) * 0.5  
-        new_speed = new_speed * reduction_factor
-
-        if isLine:
-            self.countLap(isLine)
-
-        self._motor_manager.setAngle(new_direction)
-        self._motor_manager.setSpeed(new_speed, new_speed)
+        
 
         return (new_direction, new_speed)
 
-    def u_turn(self, direction: str, duration: float, speed: float) -> None:
+    def u_turn(self, direction: str) -> None:
         """
         Exécute un U-Turn en braquant à fond (gauche ou droite) pendant une durée donnée,
         à une vitesse spécifiée.
@@ -100,6 +98,7 @@ Initialisation de la voiture : {self._car_name}
           - duration: durée du U-Turn en secondes
           - speed: vitesse en pourcentage (0 à 100) pendant le U-Turn
         """
+        speed = 80
         if direction.lower() == 'left':
             turn_value = -100
         elif direction.lower() == 'right':
@@ -107,10 +106,11 @@ Initialisation de la voiture : {self._car_name}
         else:
             raise ValueError("La direction doit être 'left' ou 'right'")
         self._motor_manager.setAngle(turn_value)
-        self._motor_manager.setSpeed(speed)
-        time.sleep(duration)
+        self._motor_manager.setSpeed(speed) 
+        time.sleep(4)
 
         self._motor_manager.setSpeed(0)
+        self._motor_manager.setAngle(0)
 
     def monitoring(self, distances: tuple, isLine: bool, direction: str, speed: float, ina: dict, rgb: tuple):
         """
