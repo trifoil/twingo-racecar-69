@@ -88,14 +88,14 @@ Initialisation de la voiture : {self._car_name}
             self._last_move = time.time()
             diff_time = 0.0
         elif self._last_move != None:
-            diff_time = self._last_move - time.time()
+            diff_time = time.time() - self._last_move
             self._last_move = time.time()
         if diff_time > 0:
             if self._last_error == None:
                 self._last_error = 0.0
             elif self._last_error != None:
                 diff_error = right_disc - target_right
-                derivative = diff_error - self._last_error / diff_time
+                derivative = (diff_error - self._last_error) / diff_time
                 self._last_error = diff_error
         else:
             derivative = 0.0
