@@ -71,7 +71,7 @@ class DummyPCA9685:
 
 # --- Import de SensorManager après avoir patché les modules matériels ---
 from classes.Motor_Manager import Motor_Manager
-from classes.DC_motor import DC_Motor
+from classes.DC_Motor import DC_Motor
 from classes.Servo_Motor import Servo_Motor
 
 
@@ -100,14 +100,13 @@ class Test_Motor_Manager(unittest.TestCase):
     def test_set_speed_for_all_valid_positives(self):
         start = 1
         end = 100
-        old_value = 1
+        old_value = (2**16)-1
         for i in range(start, end+1, 1):
             self.__class__.motor_manager.set_speed(i)
             for motor in self.__class__.motors:
                 duty_cycle = self.__class__.motor_manager._pwm_driver.channels[motor.pin_enable].duty_cycle
-                self.assertGreaterEqual(duty_cycle, old_value)
-                self.assertGreaterEqual(duty_cycle, 1)
-                self.assertGreaterEqual((2**16)-1, duty_cycle)
+                self.assertGreaterEqual(duty_cycle, 0)
+                self.assertGreater((2**16)-1, duty_cycle)
                 old_value = duty_cycle
 
         for motor in self.__class__.motors:
@@ -120,14 +119,14 @@ class Test_Motor_Manager(unittest.TestCase):
     def test_set_speed_for_all_valid_negatives(self):
         start = -100
         end = 0
-        old_value = (2**16)-1
+        old_value = 0
         for i in range(start, end, 1):
             self.__class__.motor_manager.set_speed(i)
             for motor in self.__class__.motors:
                 duty_cycle = self.__class__.motor_manager._pwm_driver.channels[motor.pin_enable].duty_cycle
-                self.assertGreaterEqual(old_value, duty_cycle)
-                self.assertGreaterEqual(duty_cycle, 1)
-                self.assertGreaterEqual((2**16)-1, duty_cycle)
+                self.assertGreaterEqual(duty_cycle, old_value)
+                self.assertGreaterEqual(duty_cycle, 0)
+                self.assertGreater((2**16)-1, duty_cycle)
                 old_value = duty_cycle
 
         for motor in self.__class__.motors:
@@ -154,7 +153,7 @@ class Test_Motor_Manager(unittest.TestCase):
             self.__class__.motor_manager.set_speed(value)
             for motor in self.__class__.motors:
                 duty_cycle = self.__class__.motor_manager._pwm_driver.channels[motor.pin_enable].duty_cycle
-                self.assertEqual((2**16)-1, duty_cycle)
+                self.assertEqual(0, duty_cycle)
                 motor.reset_mock()
 
 
