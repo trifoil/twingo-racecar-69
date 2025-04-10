@@ -74,7 +74,7 @@ def main():
                 TWINGO.total_laps += 1
                 print(f"Tour {TWINGO.total_laps} détecté !")
             distances = TWINGO.sensor_manager.get_distance()
-            new_direction, new_speed = TWINGO.calculate_next_move(distances, line)
+            new_direction, new_speed = TWINGO.calculate_next_move(distances)
             fr_new_direction = "braquage " + str(new_direction) + "%"
             if new_speed > 0 :
                 fr_new_direction += "droite"

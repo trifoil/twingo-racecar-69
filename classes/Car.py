@@ -31,23 +31,30 @@ Initialisation de la voiture : {self._car_name}
         front, left, right = distances
 
         try:
-            if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
+            # if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
+            if front < 20.0:
                 obstacle = True
+                print("Detected Front")
                 while obstacle:
+                    
+                    front, left, right = self._sensor_manager.get_distance()
                     try :
                         if left > right:
                             self._motor_manager.set_angle(-100)
-                            self._motor_manager.set_speed(100)
-
-
+                            self._motor_manager.set_speed(-60)
+                            print("OBSTABLE LEFT>RIGHT")
                         elif right > left:
                             self._motor_manager.set_angle(100)
-                            self._motot_manager.set_speed(100)
+                            self._motor_manager.set_speed(-60)
+                            print("OBSTABLE RIGHT>LEFT")
                     except TypeError :
                         self._motor_manager.set_angle(-100)
+                        self._motor_manager.set_speed(-60)
 
-                    if front > self._const_config["OBSTACLE_MINIMUM_DIST"]:
-                        return obstacle
+                    # if front > self._const_config["OBSTACLE_MINIMUM_DIST"]:
+                    if front > 20.0:
+                        obstacle = Falses
+                        return obstacles
 
         except Exception as e:
             print(f"Un erreur est survenue : {e}")
@@ -70,14 +77,13 @@ Initialisation de la voiture : {self._car_name}
 {self._car_name} est arrêté.
               """)
 
-    def calculate_next_move(self, distances: tuple, isLine: bool) -> tuple:
+    def calculate_next_move(self, distances: tuple) -> tuple:
         """
         Calcule la décision en temps réel à partir des mesures des capteurs.
         
         Paramètres :
           - distances : un tuple (front, left, right) en cm
-          - isLine    : booléen indiquant si la ligne est détectée (pour le comptage des tours)
-        
+ 
         Renvoie :
           - (new_direction, new_speed) : le pourcentage de braquage (-100 à 100) et la vitesse en pourcentage (0 à 100)
           
@@ -93,7 +99,7 @@ Initialisation de la voiture : {self._car_name}
           5. On met à jour la direction et la vitesse via le motorManager.
         """
         front_disc, left_disc, right_disc = distances
-        time.sleep(0.01)
+        self.detect_obstacle(distances)
         try :
             #self.detect_obstacle(distances)
             if right_disc < 0:
@@ -103,18 +109,20 @@ Initialisation de la voiture : {self._car_name}
             if right_disc < 10 :
                 new_direction = -30
                 new_speed = 50
-            elif right_disc > 40:
-                new_direction = 70
+            elif right_disc > 30:
+                new_direction = 35
                 new_speed = 50
             elif right_disc > 10 :
-                new_direction = 30
+                new_direction = 25
                 new_speed = 50
+            elif front_disc == None or right_disc == None or left_disc == None :
+                return (0,50)
             else:
                 new_direction = 0
-                new_speed = 50
+                new_speed = 30
             return (new_direction, new_speed)
         except :
-            pass
+            return (0,30)
    
 
     def u_turn(self, direction: str) -> None:
@@ -132,6 +140,7 @@ Initialisation de la voiture : {self._car_name}
             turn_value = -100
         elif direction.lower() == 'right':
             turn_value = 100
+            speed = 50
         else:
             raise ValueError("La direction doit être 'left' ou 'right'")
 
@@ -156,7 +165,7 @@ Initialisation de la voiture : {self._car_name}
         - ina       : un dictionnaire contenant les données du capteur INA (bus_voltage, shunt_voltage, current)
         - rgb       : un tuple contenant les valeurs RGB (0-255, 0-255, 0-255)
         """
-        right_disc, front_disc, left_disc = distances
+        front_disc, left_disc,right_disc = distances
 
         # Affichage des données
         print(f"""
