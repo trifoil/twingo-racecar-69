@@ -34,14 +34,17 @@ Initialisation de la voiture : {self._car_name}
             if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
                 obstacle = True
                 while obstacle:
-                    if left > right:
+                    try :
+                        if left > right:
+                            self._motor_manager.set_angle(-100)
+                            self._motor_manager.set_speed(100)
+
+
+                        elif right > left:
+                            self._motor_manager.set_angle(100)
+                            self._motot_manager.set_speed(100)
+                    except TypeError :
                         self._motor_manager.set_angle(-100)
-                        self._motor_manager.set_speed(100)
-
-
-                    elif right > left:
-                        self._motor_manager.set_angle(100)
-                        self._motot_manager.set_speed(100)
 
                     if front > valeur_obstacle:
                         return obstacle
