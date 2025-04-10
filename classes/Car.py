@@ -43,7 +43,8 @@ Initialisation de la voiture : {self._car_name}
 
 
                 if front > valeur_obstacle:
-                    obstacle = False
+                    return obstacle
+
 
 
 def count_lap(self,detectedLine:bool) -> None:
