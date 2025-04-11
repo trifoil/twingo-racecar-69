@@ -141,7 +141,7 @@ def main():
             print("Départ feu vert en cours")
             if TWINGO.sensor_manager.is_green(30,50) :
                 print("Le voiture a détecté un feu vert !")
-                TWINGO.current_state = "racing"
+                TWINGO.start_car("racing")
             
 
         else:
