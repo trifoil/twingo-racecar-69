@@ -16,6 +16,10 @@ sys.modules['adafruit_tcs34725'] = MagicMock()
 
 from classes.RGB_Sensor import RGB_Sensor
 
+# Disable Logging
+from classes.Logging_Utils import Logging_Utils
+Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
+
 class TestRGBSensor(unittest.TestCase):
     def setUp(self):
         """

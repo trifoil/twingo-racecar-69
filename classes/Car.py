@@ -1,5 +1,6 @@
 from classes.Sensor_Manager import Sensor_Manager
 from classes.Motor_Manager import Motor_Manager
+from classes.Config import Config
 import busio
 import board
 import time
@@ -13,13 +14,31 @@ Initialisation de la voiture : {self._car_name}
         self._sensor_manager = sensor_manager
         self._motor_manager = motor_manager
         self._total_laps = int(0)
-        self._last_lap_duration = int(0)
+        self._last_lap_duration = []
         self._current_state = "stand_by"
         self._const_config = const_config
         self._target_lap = 0
+        self._last_move = None
+        self._last_error = None
         print(f"""
 {self._car_name} opérationel !
               """)
+
+        try:
+            """ Récupération de la configuration actuelle, si le fichier est présent alors le module était en cours d'exécution et un problème est survenu """
+            self._config = Config.load_from_json("current_config.json")
+            self._total_laps = self._config.laps_elapsed
+            self._target_lap = self._config.laps_total
+            self._last_lap_duration = self._config.lap_start_timestamps
+            if self._config.should_be_running:
+                self._current_state = "racing"
+                print(f"""Récupération de la configuration actuelle : {self._car_name} était en cours d'exécution""")
+            
+        except FileNotFoundError:
+            """ Si le fichier n'est pas présent, alors la voiture n'était pas en cours d'exécution, et on crée un nouveau fichier de configuration actuel """
+            self._config = Config()
+            self._config.set_attributes(should_be_running=False, laps_elapsed=0, laps_total=0, lap_start_timestamps=[])
+            self._config.save_to_json("current_config.json")
 
     def detect_obstacle(self,distances:tuple)->bool:
         """
@@ -61,43 +80,37 @@ Initialisation de la voiture : {self._car_name}
 
     def count_lap(self,detectedLine:bool) -> None:
         """
-        Détection d'une ligne, si ligne detectée alors nombre de tour +1
+        Détection d'une ligne, si ligne detectée alors nombre de tour +1 et sauvegarde de la configuration actuelle
         """
         if detectedLine:
             self._total_laps +=1
+            self._config.add_lap()
+            self._config.save_to_json("current_config.json")
+
         print("NEW LAP")
 
     def start_car(self, mode:str) -> None:
+        """ Au démarrage de la voiture, on initialise le mode de conduite et on sauvegarde la configuration actuelle """
         self._current_state = mode
+        self._config.add_lap_timestamp()
+        self._config.set_attributes(should_be_running=True)
+        self._config.save_to_json("current_config.json")
+
     def stop_car(self):
+        """ Arrêt de la voiture, on sauvegarde la configuration actuelle et on remet les moteurs à 0 et les tours à 0 """
         self._current_state = "stand_by"
         self._motor_manager.set_speed(0)
         self._motor_manager.set_angle(0)
+        self._target_lap = 0
+        self._total_laps = 0
+        self._last_lap_duration = []
+        self._config.set_attributes(should_be_running=False, laps_elapsed=0, laps_total=0, lap_start_timestamps=[])
+        self._config.save_to_json("current_config.json")
         print(f"""
 {self._car_name} est arrêté.
               """)
 
     def calculate_next_move(self, distances: tuple) -> tuple:
-        """
-        Calcule la décision en temps réel à partir des mesures des capteurs.
-        
-        Paramètres :
-          - distances : un tuple (front, left, right) en cm
- 
-        Renvoie :
-          - (new_direction, new_speed) : le pourcentage de braquage (-100 à 100) et la vitesse en pourcentage (0 à 100)
-          
-        La logique :
-          1. Si la distance frontale est inférieure au seuil, arrêt d'urgence.
-          2. Calcul du braquage : 
-             - On définit une erreur = (distance_droite - distance_gauche).
-             - On applique un gain proportionnel pour obtenir un pourcentage de braquage.
-          3. Calcul de la vitesse :
-             - On fait une interpolation linéaire entre la distance minimale et une distance frontale max.
-             - On réduit la vitesse si le braquage est important (pour plus de stabilité).
-          4. Si la ligne est détectée, on incrémente le compteur de tours.
-          5. On met à jour la direction et la vitesse via le motorManager.
-        """
         front_disc, left_disc, right_disc = distances
         # self.detect_obstacle(distances)
         # try :
@@ -123,6 +136,33 @@ Initialisation de la voiture : {self._car_name}
         # except :
         #     return (0,30)
         '''try:
+        # target_right = 10.0
+        # kp = 1.0
+        # kd = 0.5
+        # if self._last_move == None:
+        #     self._last_move = time.time()
+        #     diff_time = 0.0
+        # elif self._last_move != None:
+        #     diff_time = time.time() - self._last_move
+        #     self._last_move = time.time()
+        # if diff_time > 0:
+        #     if self._last_error == None:
+        #         self._last_error = 0.0
+        #     elif self._last_error != None:
+        #         diff_error = right_disc - target_right
+        #         derivative = (diff_error - self._last_error) / diff_time
+        #         self._last_error = diff_error
+        # else:
+        #     derivative = 0.0
+        # new_direction = kp * (right_disc - target_right) + kd * derivative
+        # new_speed = 50
+        # if new_direction > 100:
+        #     new_direction = 100
+        # if new_direction < -100:
+        #     new_direction = -100
+        # return (new_direction, new_speed)
+    
+        try:
             minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
             maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
             target = maximum_right - minimum_right
@@ -331,6 +371,7 @@ Initialisation de la voiture : {self._car_name}
             print("Mode course 1 tour sélectionné")
             self._target_lap = 1
             self._total_laps = 0
+            self._config.set_laps_target(1)
             return "racing"
         elif mode == "2":
             print("Mode course +1 tours sélectionné")
@@ -340,6 +381,8 @@ Initialisation de la voiture : {self._car_name}
                     if nombre_tours > 0:
                         print(f"Mode course {nombre_tours} tours sélectionné")
                         self._target_lap = nombre_tours
+                        self._total_laps = 0
+                        self._config.set_laps_target(nombre_tours)
                         return "racing"
                     else:
                         print("Veuillez entrer un nombre entier positif.")

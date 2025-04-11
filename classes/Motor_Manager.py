@@ -1,9 +1,13 @@
+from classes.Logging_Utils import Logging_Utils
 from classes.DC_Motor import DC_Motor
 from classes.Servo_Motor import Servo_Motor
 from adafruit_pca9685 import PCA9685
 import busio
 
 class Motor_Manager():
+
+    logger = Logging_Utils.get_logger()
+
     def __init__(self, motors: list[DC_Motor], servo: Servo_Motor, i2c: (int, busio.I2C)):
         """
         :param motors: liste des moteurs (généralement 2) utilisés pour la propulsion du véhicule  
@@ -32,7 +36,9 @@ class Motor_Manager():
         :param new_angle: l’angle de rotation en pourcentage de l’angle maximal (entre -100 % et 100 %)
         """
         servo_duty = self._angle_to_pwm(int(new_angle))
-        self._pwm_driver.channels[self._servo_direction.board_channel].duty_cycle = ((2**16)-1) - servo_duty
+        new_duty_cycle = ((2**16)-1) - servo_duty
+        __class__.logger.info("Changemnent du duty cylce du servo moteur pour "+str(new_duty_cycle)+" a"+str(new_angle)+"%")
+        self._pwm_driver.channels[self._servo_direction.board_channel].duty_cycle = new_duty_cycle
 
 
     def initialize_motors(self) -> None:
@@ -57,7 +63,9 @@ class Motor_Manager():
             else:
                 motor.set_direction(is_going_forward)
                 channel = self._pwm_driver.channels[motor.pin_enable]
-                channel.duty_cycle =65535 - int((safe_speed_percentage/100.0) * bits_16)
+                new_duty_cycle = 65535 - int((safe_speed_percentage/100.0) * bits_16)
+                __class__.logger.info("Changement du duty cylce du moteur pour "+str(new_duty_cycle)+" a "+str(safe_speed_percentage)+"%")
+                channel.duty_cycle = new_duty_cycle
 
 
     def _range_value(self, value: int, min_val: int = -100, max_val: int = 100) -> int:

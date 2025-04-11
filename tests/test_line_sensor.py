@@ -10,6 +10,10 @@ sys.modules['RPi.GPIO'] = mock.Mock()
 import RPi.GPIO as GPIO
 from classes.Line_Sensor import Line_Sensor
 
+# Disable Logging
+from classes.Logging_Utils import Logging_Utils
+Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
+
 class TestLine_Sensor(unittest.TestCase):
     def setUp(self):
         self.pin = 40
