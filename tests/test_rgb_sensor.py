@@ -9,7 +9,7 @@ import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
-""" Simulation (Mock) des modules matériels Adafruit avant import """
+""" MOCKS pour exécuter les tests indépendamment du code métier."""
 sys.modules['board'] = MagicMock()
 sys.modules['busio'] = MagicMock()
 sys.modules['adafruit_tcs34725'] = MagicMock()

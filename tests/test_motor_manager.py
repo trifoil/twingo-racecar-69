@@ -1,16 +1,16 @@
 import sys
 import types
 
-# --- Injection de dummy modules pour RPi et board ---
 
-# Créer un module dummy pour le package "RPi" s'il n'existe pas déjà
+""" Injection de modules dummy pour mocker """
+
 if "RPi" not in sys.modules:
     dummy_rpi = types.ModuleType("RPi")
     sys.modules["RPi"] = dummy_rpi
 else:
     dummy_rpi = sys.modules["RPi"]
 
-# Créer un module dummy pour "RPi.GPIO"
+""" Injection de RPi.GPIO dans le module RPi """
 dummy_gpio = types.ModuleType("RPi.GPIO")
 dummy_gpio.OUT = 1
 dummy_gpio.IN = 0
@@ -22,17 +22,16 @@ dummy_gpio.input = lambda pin: 0
 dummy_gpio.output = lambda pin, state: None
 dummy_gpio.cleanup = lambda: None
 
-# Assigner dummy_gpio à RPi.GPIO et au package RPi
+""" Injection de RPi.GPIO dans le module RPi """
 dummy_rpi.GPIO = dummy_gpio
 sys.modules["RPi.GPIO"] = dummy_gpio
 
-# Créer un module dummy pour "board"
 dummy_board = types.ModuleType("board")
 dummy_board.SCL = "SCL"
 dummy_board.SDA = "SDA"
 sys.modules["board"] = dummy_board
 
-# --- Fin des injections dummy ---
+
 
 import unittest
 from unittest.mock import patch, MagicMock
@@ -40,7 +39,7 @@ import threading
 import time
 import os
 
-# Ajoute le dossier parent au path pour accéder aux modules dans "classes"
+""" Ajoute le dossier parent au path pour accéder aux modules dans "classes """
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.join(current_dir, '..')
 sys.path.insert(0, parent_dir)
@@ -48,6 +47,7 @@ sys.path.insert(0, parent_dir)
 from busio import I2C
 
 class DummyPWMChannel:
+    
     def __init__(self, channel_id):
         self.channel_id = channel_id
         self._duty_cycle = 0
@@ -84,6 +84,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
     @patch("classes.Motor_Manager.PCA9685", new=DummyPCA9685)
     def test_creation_instance(self):
+        """Test si on peut créer une instance de Motor_Manager."""
         self.__class__.motors = [MagicMock(spec=DC_Motor), MagicMock(spec=DC_Motor)]
         self.__class__.motors[0].pin_enable = 4
         self.__class__.motors[1].pin_enable = 5
@@ -101,6 +102,7 @@ class Test_Motor_Manager(unittest.TestCase):
             (self.__class__.i2c, 0x41))
 
     def test_set_speed_for_all_valid_positives(self):
+        """Vérifie si la méthode set_speed fonctionne correctement pour des valeurs de 1 à 100."""
         start = 1
         end = 100
         old_value = (2**16)-1
@@ -120,6 +122,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
 
     def test_set_speed_for_all_valid_negatives(self):
+        """Vérifie si la méthode set_speed fonctionne correctement pour des valeurs de -100 à 1."""
         start = -100
         end = 0
         old_value = 0
@@ -140,6 +143,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
     
     def test_set_speed_for_null_values(self):
+        """Vérifie si la méthode set_speed fonctionne correctement pour une valeur de 0."""
         for motor in self.__class__.motors:
             self.__class__.motor_manager._pwm_driver.channels[motor.pin_enable].duty_cycle = 125
         self.__class__.motor_manager.set_speed(0)
@@ -151,6 +155,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
 
     def test_set_speed_for_out_of_range_values(self):
+        """Vérifie si set_speed corrige les erreurs de pourcentage qui sont hors des limites [-100, 100]."""
         values = [101, -101, 2000, -2000]
         for value in values:
             self.__class__.motor_manager.set_speed(value)
@@ -161,6 +166,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
 
     def test_set_angle_all_valid_values(self):
+        """Vérifie si la méthode set_angle fonctionne pour toutes les valeurs de [-100, 100]."""
         start = -100
         end = 100
         motor_manager = self.__class__.motor_manager

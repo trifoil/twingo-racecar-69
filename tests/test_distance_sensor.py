@@ -14,6 +14,7 @@ from classes.Logging_Utils import Logging_Utils
 Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
 
 class TestDistanceSensor(unittest.TestCase):
+    """" Tests unitaires pour la classe Distance_Sensor """
     def setUp(self):
         self.gpio_patch = patch('RPi.GPIO')
         self.mock_gpio = self.gpio_patch.start()

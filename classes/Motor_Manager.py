@@ -5,6 +5,7 @@ from adafruit_pca9685 import PCA9685
 import busio
 
 class Motor_Manager():
+    """Classe qui permet de faire le lien entre la voiture, les moteurs des roues et le servomoteur qui permet à la voiture de tourner."""
 
     logger = Logging_Utils.get_logger()
 
@@ -88,6 +89,11 @@ class Motor_Manager():
             return value
 
     def _angle_to_pwm(self,angle: int) -> int:
+        """
+        Convertit un pourcentage de braquage (de -100 à 100) en une valeur duty_cycle (0 à 65535)
+        pour un servo dont la plage mécanique est limitée autour du centre.
+        :param angle: l'angle pour lequel il faut calculer la valeur pwm
+        """
         center_angle = self._servo_direction.initial_angle
         range_deg = self._servo_direction.range_degrees
         min_pulse_ms = self._servo_direction.min_pulse
