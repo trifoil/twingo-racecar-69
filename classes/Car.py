@@ -402,7 +402,19 @@ Initialisation de la voiture : {self._car_name}
             return "quit"
         elif mode == "7":
             print("Mode depart feu vert sélectionné")
-            return "depart_feu_vert"
+            while True:
+                try:
+                    nombre_tours = int(input("Combien de tours ? "))
+                    if nombre_tours > 0:
+                        print(f"Mode course {nombre_tours} tours sélectionné")
+                        self._target_lap = nombre_tours
+                        self._total_laps = 0
+                        self._config.set_laps_target(nombre_tours)
+                        return "depart_feu_vert"
+                    else:
+                        print("Veuillez entrer un nombre entier positif.")
+                except ValueError:
+                    print("Entrée invalide. Veuillez entrer un nombre entier.")
         else:
             print("Mode non valide.")
             return "stand_by"
