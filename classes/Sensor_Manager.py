@@ -5,7 +5,40 @@ from classes.INA_Sensor import INA_Sensor
 import threading
 import busio
 import time
+""" La classe Sensor_Manager gère l'ensemble des capteurs d'un véhicule, permettant de centraliser
+les interactions avec différents types de capteurs (ligne, distance, RGB, courant).
 
+Elle utilise un dictionnaire pour initialiser les capteurs, ce qui permet une configuration flexible.
+Les capteurs pris en charge incluent :
+- Capteur de ligne (Line_Sensor)
+- Capteurs de distance (Distance_Sensor) pour les directions avant, gauche et droite
+- Capteur RGB (RGB_Sensor) pour détecter les couleurs
+- Capteur INA (INA_Sensor) pour mesurer le courant
+
+Fonctionnalités principales :
+- Détection de ligne : Identifie si le véhicule passe sur une ligne et gère l'état de détection.
+- Mesure des distances : Fournit les distances moyennes mesurées par les capteurs avant, gauche et droite.
+- Mesure du courant : Renvoie la valeur du courant mesuré par le capteur INA.
+- Détection de couleurs : Permet de détecter la présence de rouge ou de vert en fonction de seuils définis.
+
+La classe utilise des threads pour effectuer des mesures simultanées sur plusieurs capteurs, garantissant
+une meilleure performance dans les environnements temps réel.
+
+Attributs :
+- _line_sensor : Instance du capteur de ligne.
+- _dist_sensor_front : Instance du capteur de distance avant.
+- _dist_sensor_left : Instance du capteur de distance gauche.
+- _dist_sensor_right : Instance du capteur de distance droite.
+- _rgb_sensor : Instance du capteur RGB.
+- _ina_sensor : Instance du capteur INA.
+- _is_on_line : Booléen indiquant si le véhicule est actuellement sur une ligne.
+
+Méthodes :
+- detect_line() : Détecte le passage sur une ligne.
+- get_distance() : Renvoie un tuple des distances moyennes mesurées (avant, gauche, droite).
+- get_current() : Renvoie la valeur du courant mesuré ou None en cas d'erreur.
+- is_red(red_minimum, g_r_delta_minimum) : Détecte la présence de rouge selon des seuils.
+- is_green(green_minimum, g_r_delta_minimum) : Détecte la présence de vert selon des seuils."""
 class Sensor_Manager:
     def __init__(self,sensors:dict): 
         """ Définition de tous les capteurs et utilisation du bus commun i²C 
