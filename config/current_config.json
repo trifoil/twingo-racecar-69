@@ -1,8 +1,8 @@
 {
     "should_be_running": true,
     "laps_elapsed": 0,
-    "laps_total": 0,
+    "laps_total": 2,
     "lap_start_timestamps": [
-        1744355991.0800092
+        1744360224.9851253
     ]
 }
