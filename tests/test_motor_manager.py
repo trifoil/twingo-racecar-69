@@ -84,6 +84,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
     @patch("classes.Motor_Manager.PCA9685", new=DummyPCA9685)
     def test_creation_instance(self):
+        """Test si on peut créer une instance de Motor_Manager."""
         self.__class__.motors = [MagicMock(spec=DC_Motor), MagicMock(spec=DC_Motor)]
         self.__class__.motors[0].pin_enable = 4
         self.__class__.motors[1].pin_enable = 5
@@ -101,6 +102,7 @@ class Test_Motor_Manager(unittest.TestCase):
             (self.__class__.i2c, 0x41))
 
     def test_set_speed_for_all_valid_positives(self):
+        """Vérifie si la méthode set_speed fonctionne correctement pour des valeurs de 1 à 100."""
         start = 1
         end = 100
         old_value = (2**16)-1
@@ -120,6 +122,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
 
     def test_set_speed_for_all_valid_negatives(self):
+        """Vérifie si la méthode set_speed fonctionne correctement pour des valeurs de -100 à 1."""
         start = -100
         end = 0
         old_value = 0
@@ -140,6 +143,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
     
     def test_set_speed_for_null_values(self):
+        """Vérifie si la méthode set_speed fonctionne correctement pour une valeur de 0."""
         for motor in self.__class__.motors:
             self.__class__.motor_manager._pwm_driver.channels[motor.pin_enable].duty_cycle = 125
         self.__class__.motor_manager.set_speed(0)
@@ -151,6 +155,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
 
     def test_set_speed_for_out_of_range_values(self):
+        """Vérifie si set_speed corrige les erreurs de pourcentage qui sont hors des limites [-100, 100]."""
         values = [101, -101, 2000, -2000]
         for value in values:
             self.__class__.motor_manager.set_speed(value)
@@ -161,6 +166,7 @@ class Test_Motor_Manager(unittest.TestCase):
 
 
     def test_set_angle_all_valid_values(self):
+        """Vérifie si la méthode set_angle fonctionne pour toutes les valeurs de [-100, 100]."""
         start = -100
         end = 100
         motor_manager = self.__class__.motor_manager

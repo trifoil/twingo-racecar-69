@@ -1,12 +1,17 @@
+"""
+Classe qui va nous permettre d'envoyer les données nécessaires de l'INA sensor vers le sensor Manager.
+Elle possède un constructeur et un méthode de read_value
+
+Le constructeur ne fait que récupèrer l'i2c sous forme de tuples
+"""
+
+
 from classes.Logging_Utils import Logging_Utils
 from classes.Sensor import Sensor
 import busio
 import board
 import adafruit_ina219
-"""
-Bus à instancier, partagé par tous les composants i²C...
-monbus = busio.I2C(board.SCL,board.SDA)
-"""
+
 
 class INA_Sensor(Sensor):
 
@@ -21,7 +26,8 @@ class INA_Sensor(Sensor):
 
     def read_value(self) -> dict:
         """
-        Return un dictionaire avec comme clef le nom à récupérer, courant, power, ... et en valeur, la valeur lue par le capteur
+        Retourne un dictionaire avec comme clef le nom à récupérer, courant, power, ...
+        et en valeur, la valeur lue par le capteur.
         """
         __class__.logger.info(f"Lecture d'une valeur sur l'INA: BusVoltage: {self._sensor.bus_voltage}, ShuntVoltage: {self._sensor.shunt_voltage}, Courant: {self._sensor.current}")
         return {

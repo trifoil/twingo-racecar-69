@@ -1,3 +1,10 @@
+"""
+Classe Distance Sensor qui va nous permettre d'utiliser les sensor HC-SR04.
+Le constructeur va comprendre les pins de trigger et d'échos et un str side qui nous permet de le nommer
+afin de savoir quel côté le sensor regarde.
+"""
+
+
 import threading
 import RPi.GPIO as GPIO
 import time
@@ -22,6 +29,13 @@ class Distance_Sensor(Sensor):
         GPIO.setup(self._pin_echo, GPIO.IN)
 
     def read_value(self) -> float:
+        """
+        méthode principale de la classe qui va nous permettre de récupèrer les données de distaces du capteurs
+        Un try except est posé au début pour éviter la plupart des formes d'erreurs.
+        On vérifie que les données retournées soit bien dans la range de distances captable par le capteurs
+        et que le temps de réponse ne soit pas trop long sinon on raise une erreur.
+        Si aucune erreur n'est détectées, on récupère la distance en cm.
+        """
         with self._lock:
             try:
                 GPIO.output(self._pin_trig, True)
@@ -65,41 +79,4 @@ class Distance_Sensor(Sensor):
     def side(self):
         return self._side
 
-# if __name__ == "__main__":
-#     front_distance_test = Distance_Sensor(6,5,'front')
-#     print(front_distance_test.read_value())
-#     def show_1000_distances(capteur):
-#         for _ in range(1000):
-#             value = capteur.readValue()
-#             if value is not None:
-#                 print(f"{capteur.side}: {value} cm")
-#             else:
-#                 print(f"{capteur.side}: erreur de lecture")
-#             time.sleep(0.05)  # pour éviter de spammer le capteur
 
-#     # Init GPIO une seule fois
-#     GPIO.setmode(GPIO.BCM)
-
-#     # Crée les capteurs
-#     capteurDroite = Distance_Sensor(23, 12, 'droite')
-#     capteurGauche = Distance_Sensor(24, 16, 'gauche')
-#     capteurDevant = Distance_Sensor(25, 20, 'devant')
-
-#     # Crée les threads
-#     threads = [
-#         threading.Thread(target=_, ar_gs=(capteurDevant,)),
-#         threading.Thread(target=_, ar_gs=(capteurGauche,)),
-#         threading.Thread(target=_, ar_gs=(capteurDroite,))
-#     ]
-
-#     # Démarre les threads
-#     for th in threads:
-#         th.start()
-
-#     # Attente
-#     for th in threads:
-#         th.join()
-
-#     # Nettoyage des GPIO à la toute fin
-#     GPIO.cleanup()
-#     print("done")

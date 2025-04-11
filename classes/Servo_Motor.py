@@ -2,10 +2,9 @@
 Classe du Servo Moteur qui va nous permettre de controler l'angle des roues.
 Importance de l'angle initial afin de pouvoir toujours restart sur un angle logique et empêcher des rotations impossible.
 Importance des options possibles d'angles afin d'éviter que le servo moteur aillent dans des angles impossibles.
-"""
 
 
-"""
+
 Constructeur de la classe :
 • board_channel => branchement de PWM drive (PCA9685)
 • range_degrees => angles possibles pris par le servomoteur

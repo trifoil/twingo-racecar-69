@@ -211,38 +211,59 @@ Initialisation de la voiture : {self._car_name}
         
 
         try :
-            if left_disc > 200 and right_disc > 200 and front_disc < 15:
+            low_speed = 40
+            if left_disc > 50 and right_disc > 50 and front_disc < 15:
                 self._motor_manager.set_angle(0)
-                self._motor_manager.set_speed(-50)
-                time.sleep(0.5)
-                return (0, -50)
+                self._motor_manager.set_speed(-low_speed)
+                time.sleep(0.4)
+                new_dist = self._sensor_manager.get_distance()
+                front_disc, left_disc, right_disc = new_dist
+                if (left_disc < right_disc):
+                    return(100,-low_speed)
+                else :
+                    return(-100,-low_speed)
+                # return (calculate_next_move(self._sensor_manager.get_distance()))
             elif front_disc == None and left_disc == None and right_disc == None :
                 return (0, 0)
             elif front_disc == None and left_disc == None and right_disc != None :
-                return (-50, 50)
+                return (-50, low_speed)
             elif front_disc == None and left_disc != None and right_disc == None :
-                return (50, 50)
+                return (50, low_speed)
             elif front_disc != None and left_disc == None and right_disc == None :
-                return (0, 50)
+                return (0,low_speed)
             elif front_disc != None and left_disc == None and right_disc != None :
-                return (-50, 50)
+                return (-50, low_speed)
             elif front_disc != None and left_disc != None and right_disc == None :
-                return (50, 50)
-            elif left_disc*2 < right_disc:
+                return (50, low_speed)
+            elif  left_disc < 5 and right_disc > 50:
                 new_direction = 100
-                new_speed = 50
-            elif right_disc*2 < left_disc:
+                new_speed = low_speed
+            elif  left_disc < 10 and right_disc > 50:
+                new_direction = 60         
+                new_speed = low_speed
+
+            elif  right_disc < 5 and left_disc > 50:
                 new_direction = -100
-                new_speed = 50
-            elif left_disc < right_disc :
-                new_direction = -50
-                new_speed = 50
-            elif right_disc < left_disc :
+                new_speed = low_speed
+            elif  right_disc < 10 and left_disc > 50:
+                new_direction = -60  
+                new_speed = low_speed
+            elif right_disc*2 > left_disc :
                 new_direction = 50
-                new_speed = 50
+                new_speed = low_speed
+            elif left_disc*2 > right_disc :
+                new_direction = -50
+                new_speed = low_speed
+
+            elif left_disc - right_disc > 10  :
+                new_direction = -30
+                new_speed = low_speed
+            elif right_disc - left_disc > 10  :
+                new_direction = 30
+                new_speed = low_speed
             else :
                 new_direction = 0
-                new_speed = 50
+                new_speed = low_speed
             return (new_direction, new_speed)
         except :
             print("Erreur dans le calcul du mouvement : ")

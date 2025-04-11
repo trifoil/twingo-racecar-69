@@ -1,3 +1,14 @@
+"""
+Classe qui va nous permettre de récupèrer les informations du RGB sensor afin de les utiliser dans le
+Sensor Manager.
+
+Son constructeur n'a besoin d'aucun attribut autre que les données du bus I²C.
+
+Il possède une méthode pour récupèrer les informations qu'il capte et les retourne dans un tuple de données
+rgb
+"""
+
+
 from classes.Sensor import Sensor
 import adafruit_tcs34725
 import busio
