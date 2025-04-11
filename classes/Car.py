@@ -122,7 +122,7 @@ Initialisation de la voiture : {self._car_name}
         #     return (new_direction, new_speed)
         # except :
         #     return (0,30)
-        try:
+        '''try:
             minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
             maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
             target = maximum_right - minimum_right
@@ -139,7 +139,55 @@ Initialisation de la voiture : {self._car_name}
                 new_direction = 0
             return (new_direction, 50)
         except:
-            return (50, 50)
+            return (50, 50)'''
+        '''try:
+            # Vérification des distances
+            if front_disc is None or left_disc is None or right_disc is None:
+                raise ValueError("Les distances ne peuvent pas être None")
+
+            # Seuils de distance
+            minimum_front = self._const_config['MAX_FRONT_DIST']
+            maximum_front = 100.0
+            minimum_right = self._const_config['MINIMUM_RIGHT_DIST']
+            maximum_right = self._const_config['MAXIMUM_RIGHT_DIST']
+
+            # Calcul de l'erreur
+            error = right_disc - left_disc
+
+            # Calcul du braquage
+            new_direction = int(50 * error / (maximum_right - minimum_right))
+
+            # Calcul de la vitesse
+            new_speed = int((front_disc - minimum_front) * 100 / (maximum_front - minimum_front))
+
+            # Limitation des valeurs
+            new_direction = max(-100, min(100, new_direction))
+            new_speed = max(0, min(100, new_speed))
+
+            return (new_direction, new_speed)
+        except :
+            print("Erreur dans le calcul du mouvement : ")
+            return (0, 0)'''
+        
+
+        try :
+            if front_disc is None or left_disc is None or right_disc is None:
+                raise ValueError("Les distances ne peuvent pas être None")
+            if left_disc < right_disc :
+                new_direction = -100
+                new_speed = 50
+            elif right_disc < left_disc :
+                new_direction = 100
+                new_speed = 50
+            else :
+                new_direction = 0
+                new_speed = 50
+            return (new_direction, new_speed)
+        except :
+            print("Erreur dans le calcul du mouvement : ")
+            return (0, 0)
+            
+
    
 
     def u_turn(self, direction: str) -> None:
@@ -276,6 +324,7 @@ Initialisation de la voiture : {self._car_name}
             "4: Back and Forward\n"
             "5: Turn 8\n"
             "6: Quit\n"
+            "7: Depart Feu Vert\n"
             "Votre choix: "
         )
         if mode == "1":
@@ -308,6 +357,9 @@ Initialisation de la voiture : {self._car_name}
         elif mode == "6":
             print("Mode quit sélectionné")
             return "quit"
+        elif mode == "7":
+            print("Mode depart feu vert sélectionné")
+            return "depart_feu_vert"
         else:
             print("Mode non valide.")
             return "stand_by"
