@@ -211,13 +211,34 @@ Initialisation de la voiture : {self._car_name}
         
 
         try :
-            if front_disc is None or left_disc is None or right_disc is None:
-                raise ValueError("Les distances ne peuvent pas être None")
-            if left_disc < right_disc :
+            if left_disc > 200 and right_disc > 200 and front_disc < 15:
+                self._motor_manager.set_angle(0)
+                self._motor_manager.set_speed(-50)
+                time.sleep(0.5)
+                return (0, -50)
+            elif front_disc == None and left_disc == None and right_disc == None :
+                return (0, 0)
+            elif front_disc == None and left_disc == None and right_disc != None :
+                return (-50, 50)
+            elif front_disc == None and left_disc != None and right_disc == None :
+                return (50, 50)
+            elif front_disc != None and left_disc == None and right_disc == None :
+                return (0, 50)
+            elif front_disc != None and left_disc == None and right_disc != None :
+                return (-50, 50)
+            elif front_disc != None and left_disc != None and right_disc == None :
+                return (50, 50)
+            elif left_disc*2 < right_disc:
+                new_direction = 100
+                new_speed = 50
+            elif right_disc*2 < left_disc:
                 new_direction = -100
                 new_speed = 50
+            elif left_disc < right_disc :
+                new_direction = -50
+                new_speed = 50
             elif right_disc < left_disc :
-                new_direction = 100
+                new_direction = 50
                 new_speed = 50
             else :
                 new_direction = 0
