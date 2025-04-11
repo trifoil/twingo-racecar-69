@@ -9,6 +9,10 @@ sys.modules['time'] = __import__('time')
 
 from classes.Distance_Sensor import Distance_Sensor
 
+# Disable Logging
+from classes.Logging_Utils import Logging_Utils
+Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
+
 class TestDistanceSensor(unittest.TestCase):
     """" Tests unitaires pour la classe Distance_Sensor """
     def setUp(self):

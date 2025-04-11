@@ -39,6 +39,10 @@ from classes.INA_Sensor import INA_Sensor
 
 import unittest
 
+# Disable Logging
+from classes.Logging_Utils import Logging_Utils
+Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
+
 class TestINA_Sensor(unittest.TestCase):
     """ Classe de tests pour la classe INA_Sensor
     qui testes les cas normaux, extrêmes et les erreurs potentielles """

@@ -15,10 +15,12 @@ from classes.INA_Sensor import INA_Sensor
 from classes.RGB_Sensor import RGB_Sensor
 from classes.Sensor_Manager import Sensor_Manager
 from classes.Car import Car
+from classes.Logging_Utils import Logging_Utils
 
 import threading
 
 def main():
+    Logging_Utils.setup_logging_in_main(verbose=False, write_file=True)
     """ Création d'un bus I2C partagé"""
     i2c = busio.I2C(board.SCL,board.SDA)
 
@@ -73,7 +75,7 @@ def main():
             ina = TWINGO.sensor_manager.get_current()
 
             if line:
-                TWINGO.total_laps += 1
+                TWINGO.count_lap(line)
                 print(f"Tour {TWINGO.total_laps} détecté !")
             distances = TWINGO.sensor_manager.get_distance()
             new_direction, new_speed = TWINGO.calculate_next_move(distances)
@@ -133,6 +135,14 @@ def main():
             print("Arrêt de la voiture terminé !")
             CAR = False
             break
+
+        elif TWINGO.current_state == "depart_feu_vert":
+            """ Si la voiture est en mode depart_feu_vert, on fait un départ avec un feu vert """
+            print("Départ feu vert en cours")
+            if TWINGO.sensor_manager.is_green(30,50) :
+                print("Le voiture a détecté un feu vert !")
+                TWINGO.start_car("racing")
+            
 
         else:
             print("Mode non reconnu")

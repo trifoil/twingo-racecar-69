@@ -35,6 +35,10 @@ sys.modules["board"] = dummy_board
 import unittest
 from classes.DC_Motor import DC_Motor
 
+# Disable Logging
+from classes.Logging_Utils import Logging_Utils
+Logging_Utils.setup_logging_in_main(verbose=False, write_file=False)
+
 class Test_DC_Motor(unittest.TestCase):
     
     """ Tests unitaires pour la classe DC_Motor """
