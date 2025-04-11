@@ -73,7 +73,7 @@ def main():
             ina = TWINGO.sensor_manager.get_current()
 
             if line:
-                TWINGO.total_laps += 1
+                TWINGO.count_lap(line)
                 print(f"Tour {TWINGO.total_laps} détecté !")
             distances = TWINGO.sensor_manager.get_distance()
             new_direction, new_speed = TWINGO.calculate_next_move(distances)
