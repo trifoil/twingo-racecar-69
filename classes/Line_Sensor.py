@@ -1,3 +1,12 @@
+"""Classe qui va nous permettre de récupèrer les informations envoyés par le capteur infrarouge.
+C'est grâce à lui que nous saurons quand nous arrêter et le nombre de tour effectué
+
+Son constructeur va comprendre la pin utilisés et la connexion au GPIO.
+
+Il aura comme méthode une méthode read value et un getter
+"""
+
+
 from classes.Logging_Utils import Logging_Utils
 from classes.Sensor import Sensor
 import RPi.GPIO as GPIO
