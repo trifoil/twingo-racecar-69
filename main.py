@@ -15,10 +15,12 @@ from classes.INA_Sensor import INA_Sensor
 from classes.RGB_Sensor import RGB_Sensor
 from classes.Sensor_Manager import Sensor_Manager
 from classes.Car import Car
+from classes.Logging_Utils import Logging_Utils
 
 import threading
 
 def main():
+    Logging_Utils.setup_logging_in_main(verbose=False, write_file=True)
     """ Création d'un bus I2C partagé"""
     i2c = busio.I2C(board.SCL,board.SDA)
 
