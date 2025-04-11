@@ -36,7 +36,12 @@ import unittest
 from classes.DC_Motor import DC_Motor
 
 class Test_DC_Motor(unittest.TestCase):
+    
+    """ Tests unitaires pour la classe DC_Motor """
+    
     def test_pins_are_differents_and_in_range_of_16(self):
+        """ Vérifie que les broches (pins) utilisées pour le moteur sont différentes et qu'elles sont dans la plage autorisée (0 à 15).
+        Si les broches sont identiques ou hors de portée, une erreur est levée."""
         for i in range(16):
             for j in range(16):
                 for k in range(16):
@@ -49,6 +54,8 @@ class Test_DC_Motor(unittest.TestCase):
     
 
     def test_pins_out_of_range_raise_error(self):
+        """ Vérifie que les broches (pins) utilisées pour le moteur sont dans la plage autorisée (0 à 15)."""
+        
         working_pins = [2,3]
         error_pins = [-1, 17, 200]
         for pin in error_pins:

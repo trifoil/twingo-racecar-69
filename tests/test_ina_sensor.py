@@ -2,16 +2,17 @@ import sys
 from unittest.mock import MagicMock, patch
 import types
 
-# --- Injection de dummy modules pour RPi et board ---
 
-# Créer un module dummy pour le package "RPi" s'il n'existe pas déjà
+
+"""Créer un module dummy pour le package "RPi" s'il n'existe pas déjà"""
+
 if "RPi" not in sys.modules:
     dummy_rpi = types.ModuleType("RPi")
     sys.modules["RPi"] = dummy_rpi
 else:
     dummy_rpi = sys.modules["RPi"]
 
-# Créer un module dummy pour "RPi.GPIO"
+"""Créer un module dummy pour "RPi.GPIO"."""
 dummy_gpio = types.ModuleType("RPi.GPIO")
 dummy_gpio.OUT = 1
 dummy_gpio.IN = 0
@@ -23,19 +24,18 @@ dummy_gpio.input = lambda pin: 0
 dummy_gpio.output = lambda pin, state: None
 dummy_gpio.cleanup = lambda: None
 
-# Assigner dummy_gpio à RPi.GPIO et au package RPi
+""" Assigner dummy_gpio à RPi.GPIO et au package RPi """
 dummy_rpi.GPIO = dummy_gpio
 sys.modules["RPi.GPIO"] = dummy_gpio
 
-# Créer un module dummy pour "board"
+""" Créer un module dummy pour "board". """
 dummy_board = types.ModuleType("board")
 dummy_board.SCL = "SCL"
 dummy_board.SDA = "SDA"
 sys.modules["board"] = dummy_board
 
-# --- Fin des injections dummy ---
 
-from classes.INA_Sensor import INA_Sensor #Faut mettre le bon nom de fichier
+from classes.INA_Sensor import INA_Sensor 
 
 import unittest
 

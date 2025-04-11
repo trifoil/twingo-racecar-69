@@ -1,3 +1,6 @@
+""" Environnement de test pour tous les tests de la voiture """
+
+
 """
 Le fichier Test_Car a pour but d'être le fichier de tests des fonctionnalités de Twingo_Race_Car.
 Il doit comprendre l'intégralité des imports des classes utilisés dans la voiture.

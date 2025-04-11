@@ -10,6 +10,7 @@ sys.modules['time'] = __import__('time')
 from classes.Distance_Sensor import Distance_Sensor
 
 class TestDistanceSensor(unittest.TestCase):
+    """" Tests unitaires pour la classe Distance_Sensor """
     def setUp(self):
         self.gpio_patch = patch('RPi.GPIO')
         self.mock_gpio = self.gpio_patch.start()
