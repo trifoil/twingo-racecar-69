@@ -50,7 +50,6 @@ Initialisation de la voiture : {self._car_name}
         front, left, right = distances
 
         try:
-            # if front < self._const_config["OBSTACLE_MINIMUM_DIST"]:
             if front < 20.0:
                 obstacle = True
                 print("Detected Front")
@@ -70,10 +69,9 @@ Initialisation de la voiture : {self._car_name}
                         self._motor_manager.set_angle(-100)
                         self._motor_manager.set_speed(-60)
 
-                    # if front > self._const_config["OBSTACLE_MINIMUM_DIST"]:
                     if front > 20.0:
-                        obstacle = Falses
-                        return obstacles
+                        obstacle = False
+                        return obstacle
 
         except Exception as e:
             print(f"Un erreur est survenue : {e}")
@@ -111,19 +109,31 @@ Initialisation de la voiture : {self._car_name}
               """)
 
     def calculate_next_move(self, distances: tuple) -> tuple:
+        """
+        Calcule l'angle de braquage et la vitesse à appliquer en fonction des distances mesurées.
+
+        Parameters:
+            distances (tuple): Un triplet (frontDist, leftDist, rightDist) représentant respectivement
+                            la distance à l'obstacle devant, à gauche et à droite. Chaque valeur
+                            peut être un nombre (en cm) ou None si la mesure est indisponible.
+
+        Returns:
+            tuple: Un tuple (angle, speed), où `angle` est un entier entre -100 (braquage max à gauche)
+                et 100 (braquage max à droite), et `speed` est la vitesse à appliquer (négative si
+                marche arrière, positive sinon).
+        """
         frontDist, leftDist, rightDist = distances
 
-        # Paramètres de contrôle
-        min_front = 10          # distance minimale de sécurité (cm)
-        hysteresis_margin = 10  # on attend frontDist > min_front + 10 pour quitter le mode recul
+        min_front = 10
+        hysteresis_margin = 10
         slow_front = 60
         max_front = 70
 
-        Kp = 6               # gain proportionnel (réduit pour éviter les corrections trop vives)
-        min_speed = 21          # vitesse minimale de marche avant
-        max_speed = 28          # VITESSE MAX réduite (pour éviter d'aller "trop vite")
-        reverse_speed = -25     # vitesse de marche arrière (réduite aussi)
-        reverse_angle = 45      # braquage en marche arrière (valeur absolue réduite)
+        Kp = 6
+        min_speed = 21
+        max_speed = 28
+        reverse_speed = -25
+        reverse_angle = 45
 
         if not hasattr(self, "_is_backing_up"):
             self._is_backing_up = False
@@ -134,27 +144,20 @@ Initialisation de la voiture : {self._car_name}
             else:
                 angle_to_apply = 0
                 if leftDist is None and rightDist is not None:
-                    # Gauche inconnu => braque à droite
                     angle_to_apply = reverse_angle
                 elif rightDist is None and leftDist is not None:
-                    # Droite inconnu => braque à gauche
                     angle_to_apply = -reverse_angle
                 elif leftDist is not None and rightDist is not None:
-                    # Braque vers le côté le plus libre
                     if leftDist < rightDist:
                         angle_to_apply = reverse_angle
                     else:
                         angle_to_apply = -reverse_angle
-                # Sinon, si on n'a aucune info : recule tout droit
                 return (angle_to_apply, reverse_speed)
 
-        # --- MODE NORMAL : ON VÉRIFIE SI ON DOIT SE METTRE EN MARCHE ARRIÈRE ---
         if frontDist is None and (leftDist is None or rightDist is None):
-            # Trop d'inconnues => par défaut on s'arrête
             return (0, 0)
 
         if frontDist is not None and frontDist < min_front:
-            # Active le mode recul
             self._is_backing_up = True
             angle_to_apply = 0
             if leftDist is None and rightDist is not None:
@@ -168,36 +171,26 @@ Initialisation de la voiture : {self._car_name}
                     angle_to_apply = -reverse_angle
             return (angle_to_apply, reverse_speed)
 
-        # --- MARCHE AVANT NORMALE ---
-        # Gérer les cas de None gauche/droite
         if leftDist is None and rightDist is None:
-            # On n’a que frontDist => cap neutre
             return (0, min_speed)
         elif leftDist is None:
-            error = 1   # Suppose mur à gauche => se décale à gauche
+            error = 1
         elif rightDist is None:
-            error = -1  # Suppose mur à droite => se décale à droite
+            error = -1
         else:
-            # Cas normal : on compare
             error = rightDist - leftDist
 
-        # Braquage proportionnel, borné à [-100, 100]
         newAngle = max(-100, min(100, Kp * error))
 
-        # Calcul de la vitesse en fonction du frontDist
         try:
             rawSpeed = (frontDist - slow_front) / (max_front - slow_front) * 100
         except ZeroDivisionError:
             rawSpeed = 50
 
-        # Limite la vitesse entre [min_speed, max_speed]
         rawSpeed = max(min_speed, min(max_speed, rawSpeed))
 
-        # Réduit la vitesse si on braque fort
         correctionFactor = 1 - (abs(newAngle) / 100) * 0.5
         newSpeed = max(min_speed, rawSpeed * correctionFactor)
-
-        # On borne aussi newSpeed à max_speed au cas où
         newSpeed = min(newSpeed, max_speed)
 
         return (newAngle, newSpeed)
