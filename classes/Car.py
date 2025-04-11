@@ -93,6 +93,7 @@ Initialisation de la voiture : {self._car_name}
         """ Au démarrage de la voiture, on initialise le mode de conduite et on sauvegarde la configuration actuelle """
         self._current_state = mode
         self._config.add_lap_timestamp()
+        self._config.set_attributes(should_be_running=True)
         self._config.save_to_json("current_config.json")
 
     def stop_car(self):
@@ -111,50 +112,50 @@ Initialisation de la voiture : {self._car_name}
 
     def calculate_next_move(self, distances: tuple) -> tuple:
         front_disc, left_disc, right_disc = distances
-        target_right = 10.0
-        kp = 1.0
-        kd = 0.5
-        if self._last_move == None:
-            self._last_move = time.time()
-            diff_time = 0.0
-        elif self._last_move != None:
-            diff_time = time.time() - self._last_move
-            self._last_move = time.time()
-        if diff_time > 0:
-            if self._last_error == None:
-                self._last_error = 0.0
-            elif self._last_error != None:
-                diff_error = right_disc - target_right
-                derivative = (diff_error - self._last_error) / diff_time
-                self._last_error = diff_error
-        else:
-            derivative = 0.0
-        new_direction = kp * (right_disc - target_right) + kd * derivative
-        new_speed = 50
-        if new_direction > 100:
-            new_direction = 100
-        if new_direction < -100:
-            new_direction = -100
-        return (new_direction, new_speed)
+        # target_right = 10.0
+        # kp = 1.0
+        # kd = 0.5
+        # if self._last_move == None:
+        #     self._last_move = time.time()
+        #     diff_time = 0.0
+        # elif self._last_move != None:
+        #     diff_time = time.time() - self._last_move
+        #     self._last_move = time.time()
+        # if diff_time > 0:
+        #     if self._last_error == None:
+        #         self._last_error = 0.0
+        #     elif self._last_error != None:
+        #         diff_error = right_disc - target_right
+        #         derivative = (diff_error - self._last_error) / diff_time
+        #         self._last_error = diff_error
+        # else:
+        #     derivative = 0.0
+        # new_direction = kp * (right_disc - target_right) + kd * derivative
+        # new_speed = 50
+        # if new_direction > 100:
+        #     new_direction = 100
+        # if new_direction < -100:
+        #     new_direction = -100
+        # return (new_direction, new_speed)
     
-        # try:
-        #     minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
-        #     maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
-        #     target = maximum_right - minimum_right
-        #     if right_disc < 0:
-        #         right_disc = 0
-        #     if right_disc > 100:
-        #         right_disc = 100
+        try:
+            minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
+            maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
+            target = maximum_right - minimum_right
+            if right_disc < 0:
+                right_disc = 0
+            if right_disc > 100:
+                right_disc = 100
 
-        #     new_direction = 10 * right_disc + 100
+            new_direction = 10 * right_disc + 100
             
-        #     if new_direction > 100:
-        #         new_direction = 100
-        #     if new_direction < 0:
-        #         new_direction = 0
-        #     return (new_direction, 50)
-        # except:
-        #     return (50, 50)
+            if new_direction > 100:
+                new_direction = 100
+            if new_direction < 0:
+                new_direction = 0
+            return (new_direction, 50)
+        except:
+            return (50, 50)
    
 
     def u_turn(self, direction: str) -> None:
@@ -297,6 +298,7 @@ Initialisation de la voiture : {self._car_name}
             print("Mode course 1 tour sélectionné")
             self._target_lap = 1
             self._total_laps = 0
+            self._config.set_laps_target(1)
             return "racing"
         elif mode == "2":
             print("Mode course +1 tours sélectionné")
@@ -307,6 +309,7 @@ Initialisation de la voiture : {self._car_name}
                         print(f"Mode course {nombre_tours} tours sélectionné")
                         self._target_lap = nombre_tours
                         self._total_laps = 0
+                        self._config.set_laps_target(nombre_tours)
                         return "racing"
                     else:
                         print("Veuillez entrer un nombre entier positif.")
