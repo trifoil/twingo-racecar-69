@@ -111,166 +111,97 @@ Initialisation de la voiture : {self._car_name}
               """)
 
     def calculate_next_move(self, distances: tuple) -> tuple:
-        front_disc, left_disc, right_disc = distances
-        # self.detect_obstacle(distances)
-        # try :
-        #     if right_disc < 0:
-        #         raise ValueError("right_disc cannot be negative")
-        #     if right_disc > 100:
-        #         right_disc = 100
-        #     if right_disc < 10 :
-        #         new_direction = -30
-        #         new_speed = 50
-        #     elif right_disc > 30:
-        #         new_direction = 35
-        #         new_speed = 50
-        #     elif right_disc > 10 :
-        #         new_direction = 25
-        #         new_speed = 50
-        #     elif front_disc == None or right_disc == None or left_disc == None :
-        #         return (0,50)
-        #     else:
-        #         new_direction = 0
-        #         new_speed = 30
-        #     return (new_direction, new_speed)
-        # except :
-        #     return (0,30)
-        '''try:
-        # target_right = 10.0
-        # kp = 1.0
-        # kd = 0.5
-        # if self._last_move == None:
-        #     self._last_move = time.time()
-        #     diff_time = 0.0
-        # elif self._last_move != None:
-        #     diff_time = time.time() - self._last_move
-        #     self._last_move = time.time()
-        # if diff_time > 0:
-        #     if self._last_error == None:
-        #         self._last_error = 0.0
-        #     elif self._last_error != None:
-        #         diff_error = right_disc - target_right
-        #         derivative = (diff_error - self._last_error) / diff_time
-        #         self._last_error = diff_error
-        # else:
-        #     derivative = 0.0
-        # new_direction = kp * (right_disc - target_right) + kd * derivative
-        # new_speed = 50
-        # if new_direction > 100:
-        #     new_direction = 100
-        # if new_direction < -100:
-        #     new_direction = -100
-        # return (new_direction, new_speed)
-    
-        try:
-            minimum_right =  self._const_config['MINIMUM_RIGHT_DIST']
-            maximum_right =  self._const_config['MAXIMUM_RIGHT_DIST']
-            target = maximum_right - minimum_right
-            if right_disc < 0:
-                right_disc = 0
-            if right_disc > 100:
-                right_disc = 100
+        frontDist, leftDist, rightDist = distances
 
-            new_direction = 10 * right_disc + 100
-            
-            if new_direction > 100:
-                new_direction = 100
-            if new_direction < 0:
-                new_direction = 0
-            return (new_direction, 50)
-        except:
-            return (50, 50)'''
-        '''try:
-            # Vérification des distances
-            if front_disc is None or left_disc is None or right_disc is None:
-                raise ValueError("Les distances ne peuvent pas être None")
+        # Paramètres de contrôle
+        min_front = 10          # distance minimale de sécurité (cm)
+        hysteresis_margin = 10  # on attend frontDist > min_front + 10 pour quitter le mode recul
+        slow_front = 60
+        max_front = 70
 
-            # Seuils de distance
-            minimum_front = self._const_config['MAX_FRONT_DIST']
-            maximum_front = 100.0
-            minimum_right = self._const_config['MINIMUM_RIGHT_DIST']
-            maximum_right = self._const_config['MAXIMUM_RIGHT_DIST']
+        Kp = 6               # gain proportionnel (réduit pour éviter les corrections trop vives)
+        min_speed = 21          # vitesse minimale de marche avant
+        max_speed = 28          # VITESSE MAX réduite (pour éviter d'aller "trop vite")
+        reverse_speed = -25     # vitesse de marche arrière (réduite aussi)
+        reverse_angle = 45      # braquage en marche arrière (valeur absolue réduite)
 
-            # Calcul de l'erreur
-            error = right_disc - left_disc
+        if not hasattr(self, "_is_backing_up"):
+            self._is_backing_up = False
 
-            # Calcul du braquage
-            new_direction = int(50 * error / (maximum_right - minimum_right))
+        if self._is_backing_up:
+            if frontDist is not None and frontDist > (min_front + hysteresis_margin):
+                self._is_backing_up = False
+            else:
+                angle_to_apply = 0
+                if leftDist is None and rightDist is not None:
+                    # Gauche inconnu => braque à droite
+                    angle_to_apply = reverse_angle
+                elif rightDist is None and leftDist is not None:
+                    # Droite inconnu => braque à gauche
+                    angle_to_apply = -reverse_angle
+                elif leftDist is not None and rightDist is not None:
+                    # Braque vers le côté le plus libre
+                    if leftDist < rightDist:
+                        angle_to_apply = reverse_angle
+                    else:
+                        angle_to_apply = -reverse_angle
+                # Sinon, si on n'a aucune info : recule tout droit
+                return (angle_to_apply, reverse_speed)
 
-            # Calcul de la vitesse
-            new_speed = int((front_disc - minimum_front) * 100 / (maximum_front - minimum_front))
-
-            # Limitation des valeurs
-            new_direction = max(-100, min(100, new_direction))
-            new_speed = max(0, min(100, new_speed))
-
-            return (new_direction, new_speed)
-        except :
-            print("Erreur dans le calcul du mouvement : ")
-            return (0, 0)'''
-        
-
-        try :
-            low_speed = 40
-            if left_disc > 50 and right_disc > 50 and front_disc < 15:
-                self._motor_manager.set_angle(0)
-                self._motor_manager.set_speed(-low_speed)
-                time.sleep(0.4)
-                new_dist = self._sensor_manager.get_distance()
-                front_disc, left_disc, right_disc = new_dist
-                if (left_disc < right_disc):
-                    return(100,-low_speed)
-                else :
-                    return(-100,-low_speed)
-                # return (calculate_next_move(self._sensor_manager.get_distance()))
-            elif front_disc == None and left_disc == None and right_disc == None :
-                return (0, 0)
-            elif front_disc == None and left_disc == None and right_disc != None :
-                return (-50, low_speed)
-            elif front_disc == None and left_disc != None and right_disc == None :
-                return (50, low_speed)
-            elif front_disc != None and left_disc == None and right_disc == None :
-                return (0,low_speed)
-            elif front_disc != None and left_disc == None and right_disc != None :
-                return (-50, low_speed)
-            elif front_disc != None and left_disc != None and right_disc == None :
-                return (50, low_speed)
-            elif  left_disc < 5 and right_disc > 50:
-                new_direction = 100
-                new_speed = low_speed
-            elif  left_disc < 10 and right_disc > 50:
-                new_direction = 60         
-                new_speed = low_speed
-
-            elif  right_disc < 5 and left_disc > 50:
-                new_direction = -100
-                new_speed = low_speed
-            elif  right_disc < 10 and left_disc > 50:
-                new_direction = -60  
-                new_speed = low_speed
-            elif right_disc*2 > left_disc :
-                new_direction = 50
-                new_speed = low_speed
-            elif left_disc*2 > right_disc :
-                new_direction = -50
-                new_speed = low_speed
-
-            elif left_disc - right_disc > 10  :
-                new_direction = -30
-                new_speed = low_speed
-            elif right_disc - left_disc > 10  :
-                new_direction = 30
-                new_speed = low_speed
-            else :
-                new_direction = 0
-                new_speed = low_speed
-            return (new_direction, new_speed)
-        except :
-            print("Erreur dans le calcul du mouvement : ")
+        # --- MODE NORMAL : ON VÉRIFIE SI ON DOIT SE METTRE EN MARCHE ARRIÈRE ---
+        if frontDist is None and (leftDist is None or rightDist is None):
+            # Trop d'inconnues => par défaut on s'arrête
             return (0, 0)
-            
 
-   
+        if frontDist is not None and frontDist < min_front:
+            # Active le mode recul
+            self._is_backing_up = True
+            angle_to_apply = 0
+            if leftDist is None and rightDist is not None:
+                angle_to_apply = reverse_angle
+            elif rightDist is None and leftDist is not None:
+                angle_to_apply = -reverse_angle
+            elif leftDist is not None and rightDist is not None:
+                if leftDist < rightDist:
+                    angle_to_apply = reverse_angle
+                else:
+                    angle_to_apply = -reverse_angle
+            return (angle_to_apply, reverse_speed)
+
+        # --- MARCHE AVANT NORMALE ---
+        # Gérer les cas de None gauche/droite
+        if leftDist is None and rightDist is None:
+            # On n’a que frontDist => cap neutre
+            return (0, min_speed)
+        elif leftDist is None:
+            error = 1   # Suppose mur à gauche => se décale à gauche
+        elif rightDist is None:
+            error = -1  # Suppose mur à droite => se décale à droite
+        else:
+            # Cas normal : on compare
+            error = rightDist - leftDist
+
+        # Braquage proportionnel, borné à [-100, 100]
+        newAngle = max(-100, min(100, Kp * error))
+
+        # Calcul de la vitesse en fonction du frontDist
+        try:
+            rawSpeed = (frontDist - slow_front) / (max_front - slow_front) * 100
+        except ZeroDivisionError:
+            rawSpeed = 50
+
+        # Limite la vitesse entre [min_speed, max_speed]
+        rawSpeed = max(min_speed, min(max_speed, rawSpeed))
+
+        # Réduit la vitesse si on braque fort
+        correctionFactor = 1 - (abs(newAngle) / 100) * 0.5
+        newSpeed = max(min_speed, rawSpeed * correctionFactor)
+
+        # On borne aussi newSpeed à max_speed au cas où
+        newSpeed = min(newSpeed, max_speed)
+
+        return (newAngle, newSpeed)
+
 
     def u_turn(self, direction: str) -> None:
         """

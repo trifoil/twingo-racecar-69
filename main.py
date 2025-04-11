@@ -139,7 +139,7 @@ def main():
         elif TWINGO.current_state == "depart_feu_vert":
             """ Si la voiture est en mode depart_feu_vert, on fait un départ avec un feu vert """
             print("Départ feu vert en cours")
-            if TWINGO.sensor_manager.is_green(30,50) :
+            if TWINGO.sensor_manager.is_green(30,1) :
                 print("Le voiture a détecté un feu vert !")
                 TWINGO.start_car("racing")
             
