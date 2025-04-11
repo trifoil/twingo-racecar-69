@@ -4,6 +4,7 @@ import sys
 import os
 
 class Logging_Utils():
+    """Classe utilitaire qui permet de log des informations/warning et erreurs"""
     logging_folder = "logs"
     logging_file_size_bytes = 500000
     backup_count = 2
