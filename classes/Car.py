@@ -397,18 +397,18 @@ Initialisation de la voiture : {self._car_name}
         obstacle = False
             
         front, left, right = distances
-        if front < 100 :
+        if front < 40 :
             obstacle = True
             self._motor_manager.set_angle(-100)
-            time.sleep(2)
+            time.sleep(1)
             self._motor_manager.set_angle(100)
-            time.sleep(2)
+            time.sleep(1)
             self._motor_manager.set_angle(0)
-            time.sleep(5)
+            time.sleep(2)
             self._motor_manager.set_angle(100)
-            time.sleep(2.5)
+            time.sleep(1)
             self._motor_manager.set_angle(-100)
-            time.sleep(2.2)
+            time.sleep(1)
             self._motor_manager.set_angle(0)
         
         
