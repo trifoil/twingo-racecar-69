@@ -132,7 +132,6 @@ def main():
             TWINGO.motor_manager.initialize_motors()
             TWINGO.motor_manager.set_speed(35)
             TWINGO.eviter_obstacle(distances)
-            TWINGO.stop_car()
 
         elif TWINGO.current_state == "quit":
             """ Si la voiture est en mode quit, on arrête la voiture et on quitte le programme """
