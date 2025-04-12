@@ -385,6 +385,29 @@ Initialisation de la voiture : {self._car_name}
             print("Mode non valide.")
             return "stand_by"
         
+    def eviter_obstacle(self, distances:tuple)->bool:
+        """
+        Fonction d'évitement d'obstacle, si un obstacle est détecté alors la voiture double al voiture par la gauche et apres retourne à droite pour revenir la où il était
+        Retourne vrai si l'obstacle est détecté
+        """ 
+        obstacle = False
+            
+        front, left, right = distances
+        if front < 10 :
+            obstacle = True
+            self._motor_manager.set_angle(-100)
+            time.sleep(0.5)
+            self._motor_manager.set_angle(100)
+            time.sleep(0.2)
+            self._motor_manager.set_angle(0)
+            time.sleep(0.5)
+            self._motor_manager.set_angle(100)
+            time.sleep(0.5)
+            self._motor_manager.set_angle(-100)
+            time.sleep(0.2)
+            self._motor_manager.set_angle(0)
+        
+        
     """ Getters"""
     @property
     def motor_manager(self):
