@@ -404,7 +404,7 @@ Initialisation de la voiture : {self._car_name}
             self._motor_manager.set_angle(85)
             time.sleep(1)
             self._motor_manager.set_angle(0)
-            time.sleep(2)
+            time.sleep(5)
             self._motor_manager.set_angle(85)
             time.sleep(1)
             self._motor_manager.set_angle(-85)
