@@ -129,6 +129,7 @@ def main():
 
 
         elif TWINGO.current_state == "evite_obstacle":
+            distances = TWINGO.sensor_manager.get_distance()
             TWINGO.motor_manager.initialize_motors()
             TWINGO.motor_manager.set_speed(35)
             TWINGO.eviter_obstacle(distances)
