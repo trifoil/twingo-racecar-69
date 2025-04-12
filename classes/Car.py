@@ -109,20 +109,8 @@ Initialisation de la voiture : {self._car_name}
               """)
 
     def calculate_next_move(self, distances: tuple) -> tuple:
-        """
-        Calcule l'angle de braquage et la vitesse à appliquer en fonction des distances mesurées.
-
-        Parameters:
-            distances (tuple): Un triplet (frontDist, leftDist, rightDist) représentant respectivement
-                            la distance à l'obstacle devant, à gauche et à droite. Chaque valeur
-                            peut être un nombre (en cm) ou None si la mesure est indisponible.
-
-        Returns:
-            tuple: Un tuple (angle, speed), où `angle` est un entier entre -100 (braquage max à gauche)
-                et 100 (braquage max à droite), et `speed` est la vitesse à appliquer (négative si
-                marche arrière, positive sinon).
-        """
-        frontDist, leftDist, rightDist = distances
+        """Calcule l'angle de braquage et la vitesse à appliquer en fonction des distances mesurées."""
+        front, left, right = distances
 
         min_front = 10
         hysteresis_margin = 10
@@ -130,70 +118,34 @@ Initialisation de la voiture : {self._car_name}
         max_front = 70
 
         Kp = 6
-        min_speed = 21
-        max_speed = 28
+        speed = 10
         reverse_speed = -25
         reverse_angle = 45
 
-        if not hasattr(self, "_is_backing_up"):
-            self._is_backing_up = False
+        # default value for new_angle && new_speed
+        new_angle, new_speed = (0, 20)
 
-        if self._is_backing_up:
-            if frontDist is not None and frontDist > (min_front + hysteresis_margin):
-                self._is_backing_up = False
-            else:
-                angle_to_apply = 0
-                if leftDist is None and rightDist is not None:
-                    angle_to_apply = reverse_angle
-                elif rightDist is None and leftDist is not None:
-                    angle_to_apply = -reverse_angle
-                elif leftDist is not None and rightDist is not None:
-                    if leftDist < rightDist:
-                        angle_to_apply = reverse_angle
-                    else:
-                        angle_to_apply = -reverse_angle
-                return (angle_to_apply, reverse_speed)
+        # stops the car if every dist sensor output None
+        if (front == None) and (right == None) and (left == None):
+            new_angle, new_speed = (0, 0)
 
-        if frontDist is None and (leftDist is None or rightDist is None):
-            return (0, 0)
+        # Longe la droite
+        if right is not None:
 
-        if frontDist is not None and frontDist < min_front:
-            self._is_backing_up = True
-            angle_to_apply = 0
-            if leftDist is None and rightDist is not None:
-                angle_to_apply = reverse_angle
-            elif rightDist is None and leftDist is not None:
-                angle_to_apply = -reverse_angle
-            elif leftDist is not None and rightDist is not None:
-                if leftDist < rightDist:
-                    angle_to_apply = reverse_angle
-                else:
-                    angle_to_apply = -reverse_angle
-            return (angle_to_apply, reverse_speed)
+            # Trop loin du mur
+            if right > 30:
+                new_angle = 45
+            elif right > 5:
+                new_angle = 10
 
-        if leftDist is None and rightDist is None:
-            return (0, min_speed)
-        elif leftDist is None:
-            error = 1
-        elif rightDist is None:
-            error = -1
-        else:
-            error = rightDist - leftDist
+            # Trop proche du mur
+            if right < 7:
+                new_angle = -10
 
-        newAngle = max(-100, min(100, Kp * error))
 
-        try:
-            rawSpeed = (frontDist - slow_front) / (max_front - slow_front) * 100
-        except ZeroDivisionError:
-            rawSpeed = 50
+        print(f"front: {front}, right: {right}, left: {left}")
 
-        rawSpeed = max(min_speed, min(max_speed, rawSpeed))
-
-        correctionFactor = 1 - (abs(newAngle) / 100) * 0.5
-        newSpeed = max(min_speed, rawSpeed * correctionFactor)
-        newSpeed = min(newSpeed, max_speed)
-
-        return (newAngle, newSpeed)
+        return (new_angle, new_speed)
 
 
     def u_turn(self, direction: str) -> None:
