@@ -131,7 +131,7 @@ def main():
         elif TWINGO.current_state == "evite_obstacle":
             TWINGO.motor_manager.initialize_motors()
             TWINGO.motor_manager.set_speed(35)
-            TWINGO.eviter_obstacle()
+            TWINGO.eviter_obstacle(distances)
             TWINGO.stop_car()
 
         elif TWINGO.current_state == "quit":
