@@ -126,7 +126,14 @@ def main():
             TWINGO.u_turn('right')
             TWINGO.stop_car()
             print("Grand 8 terminé !")
-        
+
+
+        elif TWINGO.current_state == "evite_obstacle":
+            TWINGO.motor_manager.initialize_motors()
+            TWINGO.motor_manager.set_speed(35)
+            TWINGO.eviter_obstacle()
+            TWINGO.stop_car()
+
         elif TWINGO.current_state == "quit":
             """ Si la voiture est en mode quit, on arrête la voiture et on quitte le programme """
             print("Arrêt de la voiture")

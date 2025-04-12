@@ -331,6 +331,7 @@ Initialisation de la voiture : {self._car_name}
             "5: Turn 8\n"
             "6: Quit\n"
             "7: Depart Feu Vert\n"
+            "8: Evite obstacle\n"
             "Votre choix: "
         )
         if mode == "1":
@@ -381,6 +382,9 @@ Initialisation de la voiture : {self._car_name}
                         print("Veuillez entrer un nombre entier positif.")
                 except ValueError:
                     print("Entrée invalide. Veuillez entrer un nombre entier.")
+        elif mode == "8":
+            print("Mode d'evitement d'obstacle")
+            return "evite_obstacle"
         else:
             print("Mode non valide.")
             return "stand_by"
